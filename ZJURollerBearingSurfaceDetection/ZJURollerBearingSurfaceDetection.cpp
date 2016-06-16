@@ -1,6 +1,6 @@
 
 // ZJURollerBearingSurfaceDetection.cpp : 定义应用程序的类行为。
-//
+//github
 
 #include "stdafx.h"
 #include "ZJURollerBearingSurfaceDetection.h"
