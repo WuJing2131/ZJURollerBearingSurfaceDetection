@@ -12,7 +12,7 @@
 
 IMPLEMENT_DYNAMIC(CHistogramDlg, CDialogEx)
 
-CHistogramDlg::CHistogramDlg(Mat *showImage,CWnd* pParent /*=NULL*/)
+CHistogramDlg::CHistogramDlg(Mat *showImage, CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_HISTGRAM, pParent)
 	, m_Histogram(showImage)
 {
@@ -69,12 +69,12 @@ void CHistogramDlg::DrawPicToHDC(Mat *img, CWnd* pWnd)
 	bitMapinfo->bmiHeader.biWidth = img->cols;
 	bitMapinfo->bmiHeader.biBitCount = img->channels() * 8;     // 每个像素所需的位数，必须是1(双色), 4(16色)，8(256色)或24(真彩色)之一  
 
-	
+
 	CRect drect;
 	pWnd->GetClientRect(drect);    //(drect);  (&drect);  两种方式均可，竟然    
 	//m_ImageHistogram.GetClientRect(drect);
 	CClientDC dc(pWnd);
-	
+
 	HDC hDC = dc.GetSafeHdc();
 	SetStretchBltMode(hDC, COLORONCOLOR);  //此句不能少哦  
 										   //内存中的图像数据拷贝到屏幕上  

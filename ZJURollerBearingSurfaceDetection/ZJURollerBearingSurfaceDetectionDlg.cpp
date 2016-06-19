@@ -45,13 +45,13 @@ volatile BOOL m_bReadReportRunFlag = FALSE;
 
 
 static UINT indicators[] =
- {
-	ID_SEPARATOR,           // status line indicator
-	ID_STATUSBAR_TX,
-	ID_STATUSBAR_RX,
-	ID_STATUSBAR_COMM,
-	ID_STATUSBAR_SENDKEY,
-	IDS_STATUPIXELPOSTION
+{
+   ID_SEPARATOR,           // status line indicator
+   ID_STATUSBAR_TX,
+   ID_STATUSBAR_RX,
+   ID_STATUSBAR_COMM,
+   ID_STATUSBAR_SENDKEY,
+   IDS_STATUPIXELPOSTION
 };
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
@@ -119,7 +119,7 @@ CZJURollerBearingSurfaceDetectionDlg::CZJURollerBearingSurfaceDetectionDlg(CWnd*
 	m_FlatFieldPixelReplacement = TRUE;
 	m_FlatField = NULL;
 #endif // FLATFIELD
-	
+
 }
 
 void CZJURollerBearingSurfaceDetectionDlg::DoDataExchange(CDataExchange* pDX)
@@ -155,7 +155,7 @@ BEGIN_MESSAGE_MAP(CZJURollerBearingSurfaceDetectionDlg, CDialogEx)
 	ON_COMMAND(IDC_FILE_NEW, &CZJURollerBearingSurfaceDetectionDlg::OnFileNew)
 	ON_COMMAND(IDC_FILE_SAVE, &CZJURollerBearingSurfaceDetectionDlg::OnFileSave)
 	ON_COMMAND(IDC_EXIT, &CZJURollerBearingSurfaceDetectionDlg::OnExit)
-    ON_COMMAND(ID_FLATFIELDCORRECTION_ENABLE, &CZJURollerBearingSurfaceDetectionDlg::OnFlatFieldEnable)
+	ON_COMMAND(ID_FLATFIELDCORRECTION_ENABLE, &CZJURollerBearingSurfaceDetectionDlg::OnFlatFieldEnable)
 	ON_COMMAND(ID_FLATFIELDCORRECTION_CALIBRATE, &CZJURollerBearingSurfaceDetectionDlg::OnFlatFieldCalibrate)
 	ON_COMMAND(ID_FLATFIELDCORRECTION_LOAD, &CZJURollerBearingSurfaceDetectionDlg::OnFlatFieldLoad)
 	ON_COMMAND(ID_FLATFIELDCORRECTION_SAVE, &CZJURollerBearingSurfaceDetectionDlg::OnFlatFieldSave)
@@ -222,18 +222,18 @@ void CZJURollerBearingSurfaceDetectionDlg::XferCallback(SapXferCallbackInfo *pIn
 			//Image Processing.........................
 			// Process current buffer (see Run member function into the SapMyProcessing.cpp file)
 			pDlg->m_countLine++;
-			
+
 			LOG(TRACE) << " A frame image acquisition is completed! Image processing...";
 			//pDlg->m_ProcessingImage->Init();
 			pDlg->m_ProcessingImage->Execute();
-			
+
 			//	pDlg->m_IsProBufFinshed = TRUE;
 
 		}
 		else
 			return;
 		//pDlg->m_View->Show();
-		
+
 	}
 }
 
@@ -251,8 +251,8 @@ void CZJURollerBearingSurfaceDetectionDlg::ImageProcessedCallback(SapProCallback
 	// Refresh view
 	pDlg->m_statusWnd.SetWindowText(str);
 	pDlg->m_View->Show();
-//	pDlg->UpdateTitleBar();
-	pDlg->SetImageFileSaveSetting(NULL,_T("SapBuffer"));
+	//	pDlg->UpdateTitleBar();
+	pDlg->SetImageFileSaveSetting(NULL, _T("SapBuffer"));
 
 	pDlg->showMatImgToWndResult();
 	pDlg->showMatImgToWndComposite();
@@ -281,9 +281,9 @@ void CZJURollerBearingSurfaceDetectionDlg::ViewCallback(SapViewCallbackInfo *pIn
 	if (pDlg->m_ImageWnd->IsRoiTrackerActive())
 		pDlg->m_ImageWnd->DisplayRoiTracker();
 #endif // FLATFIELD
-	
 
-	
+
+
 }
 
 void CZJURollerBearingSurfaceDetectionDlg::SignalCallback(SapAcqCallbackInfo *pInfo)
@@ -294,8 +294,8 @@ void CZJURollerBearingSurfaceDetectionDlg::SignalCallback(SapAcqCallbackInfo *pI
 
 BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();   
-	
+	CDialogEx::OnInitDialog();
+
 	// 将“关于...”菜单项添加到系统菜单中。
 
 	// IDM_ABOUTBOX 必须在系统命令范围内。
@@ -407,14 +407,14 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 	m_View = new SapView(m_ProcessBuffers, m_viewWnd.GetSafeHwnd(), ViewCallback, this);
 	m_ProcessingImage = new SapImageProcessing(m_ProcessBuffers, ImageProcessedCallback, this,
 		m_pSrc, m_pDst, m_nMImageProcessingPrecision);         //m_nImageProcessingPrecision
-	
 
-	
+
+
 
 	// Create all objects
 	if (!CreateObjects()) { EndDialog(TRUE); return FALSE; }
 
-	
+
 
 	// Create processing object
 	/*if (m_ProcessingImage && !*m_ProcessingImage)
@@ -467,7 +467,7 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 			DestroyObjects();
 			return FALSE;
 		}
-		LOG(TRACE) << "\n					m_Buffers Count: " << m_Buffers->GetCount() 
+		LOG(TRACE) << "\n					m_Buffers Count: " << m_Buffers->GetCount()
 			<< "\n					m_Buffers GFrameRate: " << m_Buffers->GetFrameRate()
 			<< "\n					m_Buffers Height: " << m_Buffers->GetHeight()
 			<< "\n					m_Buffers Width: " << m_Buffers->GetWidth()
@@ -491,13 +491,13 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 		m_ProcessBuffers->SetType(m_Buffers->GetType());
 		m_ProcessBuffers->SetLocation(m_Buffers->GetLocation());
 		m_ProcessBuffers->SetCount(m_Buffers->GetCount());
-		LOG(TRACE) 
+		LOG(TRACE)
 			<< "\n					m_ProcessBuffers Count: " << m_ProcessBuffers->GetCount()
 			<< "\n					m_ProcessBuffers GFrameRate: " << m_ProcessBuffers->GetFrameRate()
 			<< "\n					m_ProcessBuffers Height: " << m_ProcessBuffers->GetHeight()
 			<< "\n					m_ProcessBuffers Width: " << m_ProcessBuffers->GetWidth()
 			<< "\n					m_ProcessBuffers  Type: " << m_ProcessBuffers->GetType();
-		LOG(TRACE) 
+		LOG(TRACE)
 			<< "\n		*************************************************************************************\n"
 			<< "		TypeDefault               = -1" << "   TypeVirtual   = 0" << "   TypeContiguous            =  1\n"
 			<< "		TypeScatterGather         = 32" << "   TypeOffscreen = 8" << "   TypeOffscreenVideo        = 10\n"
@@ -561,7 +561,7 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 	// Create processing object
 	if (m_ProcessingImage && !*m_ProcessingImage)
 	{
-		
+
 		if (!m_ProcessingImage->Create())
 		{
 			LOG(TRACE) << " Create processing object failed...";
@@ -573,7 +573,7 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 		m_ProcessingImage->SetAutoEmpty(TRUE);
 		m_ProcessingImage->Init();
 	}
-	
+
 
 	return TRUE;
 }
@@ -594,7 +594,7 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::DestroyObjects()
 	// Destroy flat field object
 	if (m_FlatField && *m_FlatField)	m_FlatField->Destroy();
 #endif // FLATFIELD
-	
+
 
 	// Destroy buffer object
 	if (m_Buffers && *m_Buffers) m_Buffers->Destroy();
@@ -664,9 +664,9 @@ void CZJURollerBearingSurfaceDetectionDlg::OnPaint()
 
 void CZJURollerBearingSurfaceDetectionDlg::OnDestroy()
 {
-	
+
 	CDialog::OnDestroy();
-	
+
 	// Destroy all objects
 	DestroyObjects();
 
@@ -690,7 +690,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnDestroy()
 	if (m_pWndImageComposite) delete m_pWndImageComposite;
 	LOG(TRACE) << " Roller Bearing Surface Detection Program Over ...";
 	_CrtDumpMemoryLeaks();  //检测内存泄漏
-	
+
 }
 
 void CZJURollerBearingSurfaceDetectionDlg::OnMouseMove(UINT nFlags, CPoint point)
@@ -736,7 +736,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnSize(UINT nType, int cx, int cy)
 		rect.top = rect.bottom - 20;
 		m_wndStatusBar.MoveWindow(&rect, TRUE);
 	}
-	
+
 	//GetWindowRect(&rect);
 	/*rect.top = 30;
 	rect.left = 30;
@@ -1039,11 +1039,11 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFileNew()
 void CZJURollerBearingSurfaceDetectionDlg::OnFileLoad()
 {
 	LOG(TRACE) << " File Load Options Setting ...";
-	int count=0;
+	int count = 0;
 	CLoadSaveDlg dlg(this, m_Buffers, TRUE);
 	if (dlg.DoModal() == IDOK)
 	{
-		LOG(TRACE) 
+		LOG(TRACE)
 			<< "\n					m_Buffers Count: " << m_Buffers->GetCount()
 			<< "\n					m_Buffers GFrameRate: " << m_Buffers->GetFrameRate()
 			<< "\n					m_Buffers Height: " << m_Buffers->GetHeight()
@@ -1054,7 +1054,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFileLoad()
 		{
 			for (int i = 0; i < m_Buffers->GetHeight(); i++)
 			{
-			
+
 				//m_ProcessBuffers->CopyRect(m_Buffers, j, 0, i, m_Buffers->GetWidth(), 1, j, 0, i);
 				for (int k = 0; k < m_Buffers->GetWidth(); k++)
 				{
@@ -1066,7 +1066,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFileLoad()
 						break;
 					}
 				}
-				
+
 				m_ProcessBuffers->CopyRect(m_Buffers, j, count, i, m_lImageWidth, 1, j, 0, i);
 			}
 		}
@@ -1178,7 +1178,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnSerialportsettings()
 					m_wndStatusBar.SetPaneInfo(STATUSBAR_COMM, ID_STATUSBAR_COMM, SBPS_NORMAL, strtemp.GetLength());*/
 					//SetPaneInfo(int nIndex, UINT nID, UINT nStyle, int cxWidth);
 					m_wndStatusBar.SetPaneText(STATUSBAR_COMM, strtemp, TRUE);
-					LOG(TRACE) 
+					LOG(TRACE)
 						<< "\n					Serial Port Port:     " << m_intPort
 						<< "\n					Serial Port Baud Rate " << m_intBaudRate
 						<< "\n					Serial Port Date Bits " << m_intDataBits
@@ -1186,7 +1186,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnSerialportsettings()
 						<< "\n					Serial Port Stop Bits " << m_intStopBits
 						<< "\n					Serial Port Date Bits " << m_intDataBits
 						<< "\n					Connected ... ";
-						
+
 				}
 				else
 				{
@@ -1242,13 +1242,13 @@ void CZJURollerBearingSurfaceDetectionDlg::OnSerialportsettings()
 						else
 						{
 							CString str;
-							str.Format(_T("success: device %04X:%04X opened\n"), 
+							str.Format(_T("success: device %04X:%04X opened\n"),
 								(unsigned char)VIDdata[0] * 256 + (unsigned char)VIDdata[1],
 								(unsigned char)PIDdata[0] * 256 + (unsigned char)PIDdata[1]);
 							m_statusWnd.SetWindowText(str);
 							LOG(TRACE) << "\n					USB idVendor  " << (unsigned char)VIDdata[0] * 256 + (unsigned char)VIDdata[1]
-								       << "\n					USB idProduct " << (unsigned char)PIDdata[0] * 256 + (unsigned char)PIDdata[1]
-								       << "\n					USB opened!";
+								<< "\n					USB idProduct " << (unsigned char)PIDdata[0] * 256 + (unsigned char)PIDdata[1]
+								<< "\n					USB opened!";
 						}
 					}
 				}
@@ -1259,7 +1259,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnSerialportsettings()
 				str.Format(_T("error setting config #%d: %s\n"), MY_CONFIG, usb_strerror());
 				m_statusWnd.SetWindowText(str);
 				usb_close(gusb_handle);
-				LOG(TRACE) << " Error setting config #"<< MY_CONFIG;
+				LOG(TRACE) << " Error setting config #" << MY_CONFIG;
 				return;
 			}
 			else
@@ -1330,10 +1330,10 @@ UINT ReadReportThread(LPVOID lpParam)
 		//usb_bulk_read(gusb_handle, 0x81, ReadReportBuffer, sizeof(ReadReportBuffer), 100);
 		int ret = usb_interrupt_read(gusb_handle, 0x81, ReadReportBuffer, sizeof(ReadReportBuffer), 0);
 		std::vector<int> vecNum;
-		for(int i=0;i<ret;i++)
-             vecNum.push_back(ReadReportBuffer[i]);
+		for (int i = 0; i < ret; i++)
+			vecNum.push_back(ReadReportBuffer[i]);
 		el::Loggers::removeFlag(el::LoggingFlag::NewLineForContainer);
-		LOG(TRACE) <<" USB Receive:"<< vecNum;
+		LOG(TRACE) << " USB Receive:" << vecNum;
 
 		if ((unsigned char)ReadReportBuffer[0] == 0x01 && (unsigned char)ReadReportBuffer[3] == 0xFF && (unsigned char)ReadReportBuffer[4] == 0xFC
 			&& (unsigned char)ReadReportBuffer[5] == 0xFF && (unsigned char)ReadReportBuffer[6] == 0xFF)
@@ -1367,19 +1367,19 @@ LRESULT CZJURollerBearingSurfaceDetectionDlg::OnCommunication(WPARAM ch, LPARAM 
 	static int cmd_state = 0;
 
 	m_lRXCount++;
-	
+
 	if (SerialPortCount == 0 && ch != 0xEE)  //EE 0x XX FF FC FF FF   
 		return 0;
 
-	if(SerialPortCount<PKG_SIZE)
-	   m_pkg[SerialPortCount++] = ch;
+	if (SerialPortCount < PKG_SIZE)
+		m_pkg[SerialPortCount++] = ch;
 	if (ch == 0xFF)
 	{
 		switch (cmd_state)
 		{
-			case 2:cmd_state = 3; break;
-			case 3:cmd_state = 4; break;
-			default:cmd_state = 1; break;
+		case 2:cmd_state = 3; break;
+		case 3:cmd_state = 4; break;
+		default:cmd_state = 1; break;
 		}
 	}
 	else if (ch == 0xFC)
@@ -1397,17 +1397,17 @@ LRESULT CZJURollerBearingSurfaceDetectionDlg::OnCommunication(WPARAM ch, LPARAM 
 	{
 		switch (m_pkg[1])
 		{
-		     case 1:  m_countLine = 0; break;
-		     case 2:                   break;  //其余定义功能
-			 default:
-				break;
+		case 1:  m_countLine = 0; break;
+		case 2:                   break;  //其余定义功能
+		default:
+			break;
 		}
 
 		std::vector<int> vecNum;
-		for (int i = 0; i<SerialPortCount; i++)
+		for (int i = 0; i < SerialPortCount; i++)
 			vecNum.push_back(m_pkg[i]);
 		el::Loggers::removeFlag(el::LoggingFlag::NewLineForContainer);
-		LOG(TRACE) << " Serial Port Receive:"<<vecNum;
+		LOG(TRACE) << " Serial Port Receive:" << vecNum;
 
 		cmd_state = 0;
 		SerialPortCount = 0;
@@ -1424,7 +1424,7 @@ int CZJURollerBearingSurfaceDetectionDlg::DoStr2Hex(CString str, char* data)
 {
 	int t, t1;
 	int rlen = 0, len = str.GetLength();
-	for (int i = 0; i<len;)
+	for (int i = 0; i < len;)
 	{
 		char l, h = str[i];
 		if (h == ' ')
@@ -1463,7 +1463,7 @@ char CZJURollerBearingSurfaceDetectionDlg::DoHexChar(char c)
 byte CZJURollerBearingSurfaceDetectionDlg::DoCheckSum(unsigned char *buffer, int   size)
 {
 	byte myv = 0x00;
-	for (int i = 0; i<size; i++)
+	for (int i = 0; i < size; i++)
 		myv += *buffer++;
 	return myv;
 }
@@ -1484,7 +1484,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnBearingrollerTest()
 		len = DoStr2Hex(szSend, data);
 		usb_bulk_write(gusb_handle, EP_OUT, data, len, 100);
 	*/
-	
+
 
 }
 
@@ -1499,7 +1499,7 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::WCharToMByte(LPCWSTR lpSrc, char * lp
 
 BOOL CZJURollerBearingSurfaceDetectionDlg::WChar2MByte(LPCWSTR lpSrc, LPSTR lpDest, int nlen)
 {
-	
+
 
 	int n = 0;
 
@@ -1534,7 +1534,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnAboutAppShow()
 
 void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWndResult()
 {
-	
+
 	//CWnd* pWnd = GetDlgItem(IDC_IMAGERESULT);
 	//if (m_pSrc->empty())
 	//	return;
@@ -1616,8 +1616,8 @@ void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWndResult()
 	GetClientRect(&rect);
 	StretchDIBits(pDC->GetSafeHdc(), 0, 0, 700, 265, 0, 0,
 		bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);
-    
-	
+
+
 
 	//IplImage qImg1;
 	//qImg1 = IplImage(*m_pSrc); // cv::Mat -> IplImage
@@ -1680,7 +1680,7 @@ void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWndComposite()
 	//cimg.DrawToHDC(hDC, &rect);
 	//ReleaseDC(pDC);
 
-	SetImageFileSaveSetting(m_pDst,_T("Composite"));
+	SetImageFileSaveSetting(m_pDst, _T("Composite"));
 	BITMAPINFO *pBmpInfo;       //记录图像细节
 	BYTE *pBmpData;             //图像数据
 	BITMAPFILEHEADER bmpHeader; //文件头
@@ -1777,11 +1777,11 @@ void CZJURollerBearingSurfaceDetectionDlg::DrawPicToHDC(IplImage *img, UINT ID)
 }
 
 
-void CZJURollerBearingSurfaceDetectionDlg::SetImageFileSaveSetting(Mat *pmat,CString HeadString)
+void CZJURollerBearingSurfaceDetectionDlg::SetImageFileSaveSetting(Mat *pmat, CString HeadString)
 {
 	m_timeImageSequence = CTime::GetCurrentTime();
 	CString szTime = m_timeImageSequence.Format("%Y-%m-%d_%H-%M-%S.bmp");
-	m_szTempImageSavePath =  m_szSavePath + HeadString + szTime;
+	m_szTempImageSavePath = m_szSavePath + HeadString + szTime;
 	if (pmat != NULL)
 	{
 		char* pszMultiByte = NULL;
@@ -1791,16 +1791,16 @@ void CZJURollerBearingSurfaceDetectionDlg::SetImageFileSaveSetting(Mat *pmat,CSt
 		WideCharToMultiByte(CP_ACP, 0, m_szTempImageSavePath, -1, pszMultiByte, iSize, NULL, NULL);
 		//WCharToMByte(szImageSavePath, pszMultiByte);
 		imwrite(pszMultiByte, *pmat);
-		LOG(TRACE) << " Image Save:"<< pszMultiByte;
+		LOG(TRACE) << " Image Save:" << pszMultiByte;
 		delete pszMultiByte;
-		
+
 	}
 	else
 	{
 		m_ProcessBuffers->Save(CStringA(m_szTempImageSavePath), "-format bmp");
 		LOG(TRACE) << " Image Save:  " << m_szTempImageSavePath;
 	}
-	
+
 }
 
 void CZJURollerBearingSurfaceDetectionDlg::LoadSettings()
@@ -1884,7 +1884,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFlatFieldEnable()
 		m_Xfer->Destroy();
 		LOG(TRACE) << " Success: the transfer object is disconnected from the hardware";
 	}
-		
+
 
 	BOOL success = TRUE;
 
@@ -1892,19 +1892,19 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFlatFieldEnable()
 	if (m_FlatFieldEnabled && !m_FlatFieldUseHardware)
 	{
 		success = CheckPixelFormat("software correction");
-		LOG(TRACE) << " Check for invalid pixel format: "<< success
-			<<"\n            *****   1->Success    0->failed    ******";
+		LOG(TRACE) << " Check for invalid pixel format: " << success
+			<< "\n            *****   1->Success    0->failed    ******";
 	}
-		
+
 
 	// Enable/disable flat field correction
 	if (success)
 	{
 		success = m_FlatField->Enable(m_FlatFieldEnabled, m_FlatFieldUseHardware);
-		LOG(TRACE) << " Enable/disable flat field correction: " << success 
+		LOG(TRACE) << " Enable/disable flat field correction: " << success
 			<< "\n           *****   1->Enable    0->Disable    ******";
 	}
-		
+
 
 	if (!success)
 	{
@@ -1928,7 +1928,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFlatFieldEnable()
 				AfxMessageBox(_T("There was an error enabling hardware correction.  Software correction enabled in its place."));
 				LOG(TRACE) << " There was an error enabling hardware correction.  Software correction enabled in its place.";
 			}
-				
+
 		}
 		m_ProcessingImage->Init();
 	}

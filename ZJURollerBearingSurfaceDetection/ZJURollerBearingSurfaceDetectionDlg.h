@@ -61,7 +61,7 @@ public:
 
 	void DrawPicToHDC(IplImage *img, UINT ID);
 	// 对话框数据
-	enum { IDD = IDD_ZJUROLLERBEARINGSURFACEDETECTION_DIALOG};
+	enum { IDD = IDD_ZJUROLLERBEARINGSURFACEDETECTION_DIALOG };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
@@ -181,7 +181,7 @@ public:
 	CWnd* m_pWndImageComposite;
 	void SetImageFileSaveSetting(Mat*mat, CString HeadString);
 
-	int m_nMImageProcessingPrecision=99;
-	int m_nImagePreprocessingThreshold=15;
+	int m_nMImageProcessingPrecision = 99;
+	int m_nImagePreprocessingThreshold = 15;
 	afx_msg void OnAnalysisHistogram();
 };

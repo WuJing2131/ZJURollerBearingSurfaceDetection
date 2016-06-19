@@ -12,7 +12,7 @@ public:
 	CSerialPortDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CSerialPortDlg();
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_CSERIALPORT };
 
 protected:
@@ -43,7 +43,7 @@ public:
 	char GetParity();
 	UINT GetStopBits();
 	BOOL IsEnableSerialPortCommunication();
-	
+
 	CString GetUSBVID();
 	CString GetUSBPID();
 	BOOL IsEnableUSBCommunication();

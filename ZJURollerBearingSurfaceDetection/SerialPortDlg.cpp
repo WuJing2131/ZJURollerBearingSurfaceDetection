@@ -121,7 +121,7 @@ void CSerialPortDlg::LoadSettings()
 	m_intStopBits = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_intStopBits"), _T("1"));
 	m_szUSBVID = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_szUSBVID"), _T("C255"));
 	m_szUSBPID = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_szUSBPID"), _T("4355"));
-   //m_bUSBEnable = m_App->GetProfileIntW(_T("CSerialPortDlg"), _T("m_bUSBEnable"), FALSE);
+	//m_bUSBEnable = m_App->GetProfileIntW(_T("CSerialPortDlg"), _T("m_bUSBEnable"), FALSE);
 }
 void CSerialPortDlg::SaveSettings()
 {
@@ -163,8 +163,8 @@ char CSerialPortDlg::GetParity()
 }
 UINT CSerialPortDlg::GetStopBits()
 {
-	if (m_intStopBits==_T("1"))
-	    return 1;
+	if (m_intStopBits == _T("1"))
+		return 1;
 	else if (m_intStopBits == _T("1.5"))
 		return 1;
 	else
@@ -173,7 +173,7 @@ UINT CSerialPortDlg::GetStopBits()
 
 BOOL CSerialPortDlg::IsEnableSerialPortCommunication()
 {
-		return m_SerialPortEnable;
+	return m_SerialPortEnable;
 }
 
 CString CSerialPortDlg::GetUSBVID()

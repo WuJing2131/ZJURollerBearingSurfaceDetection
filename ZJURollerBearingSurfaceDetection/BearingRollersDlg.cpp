@@ -86,7 +86,7 @@ BOOL CBearingRollersDlg::OnInitDialog()
 	m_CtrDIPP.SetPos(100);
 	LoadSettings();
 	CalculateLine(m_dRadius, m_dLength, m_dTaper);
-	
+
 
 	GetDlgItem(IDC_DATABASECOMBO)->SetWindowTextW(_T("Search Radius Select Bearing Roller Type"));
 	CRect rect;
@@ -129,7 +129,7 @@ void CBearingRollersDlg::OnBnClickedOk()
 	LoadSettings();
 	UpdateData(FALSE);
 	LOG(TRACE) << " Database closed! Parameters Save/load...";
-	LOG(TRACE) 
+	LOG(TRACE)
 		<< "\n					Bearing Roller Radius:" << m_dRadius
 		<< "\n					Bearing Roller Length:" << m_dLength
 		<< "\n					Bearing Roller Taper:" << m_dTaper
@@ -150,12 +150,12 @@ void CBearingRollersDlg::OnBnClickedCalculate()
 	UpdateData(TRUE);
 	CalculateLine(m_dRadius, m_dLength, m_dTaper);
 	UpdateData(FALSE);
-	
+
 }
 
 void CBearingRollersDlg::CalculateLine(double Radius, double Length, double Taper)
 {
-	m_lLine = 4800 * 3.5 * 2 * Radius / 67/ m_FreDivFtr;
+	m_lLine = 4800 * 3.5 * 2 * Radius / 67 / m_FreDivFtr;
 	m_lCIDIPix = Length / 20 * 2495;
 	//m_lLine = Radius + Length + Taper;
 	SaveSettings();
@@ -164,15 +164,15 @@ void CBearingRollersDlg::CalculateLine(double Radius, double Length, double Tape
 
 void CBearingRollersDlg::LoadSettings()
 {
-	m_dRadius =_wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_dRadius"), _T("8.5")));
+	m_dRadius = _wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_dRadius"), _T("8.5")));
 	m_dLength = _wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_dLength"), _T("30.0")));
 	m_dTaper = _wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_dTaper"), _T("3.0")));
-	m_FreDivFtr= _wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_FreDivFtr"), _T("1.0")));
+	m_FreDivFtr = _wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_FreDivFtr"), _T("1.0")));
 	m_lLine = _wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_lLine"), _T("650")));
-	m_lCIDIPix=_wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_lCIDIPix"), _T("2495")));
+	m_lCIDIPix = _wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_lCIDIPix"), _T("2495")));
 	m_bSaveImageEnable = m_App->GetProfileIntW(_T("BearingRollersDlg"), _T("m_bSaveImageEnable"), TRUE);
 	m_szSavePath = m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_szSavePath"), _T("D://"));
-	m_nImageProcessingPrecision= m_App->GetProfileIntW(_T("BearingRollersDlg"), _T("m_nImageProcessingPrecision"), 100);
+	m_nImageProcessingPrecision = m_App->GetProfileIntW(_T("BearingRollersDlg"), _T("m_nImageProcessingPrecision"), 100);
 	m_nImagePreprocessingThreshold = m_App->GetProfileIntW(_T("BearingRollersDlg"), _T("m_nImagePreprocessingThreshold"), 15);
 	//StringCbCopyW(m_szSavePath, m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_szSavePath"), _T("D:/")), sizeof(m_szSavePath));
 }
@@ -189,12 +189,12 @@ void CBearingRollersDlg::SaveSettings()
 	szTemp.Format(_T("%f"), m_dTaper);
 	m_App->WriteProfileStringW(_T("BearingRollersDlg"), _T("m_dTaper"), szTemp);
 	GetDlgItem(IDC_SAVEPATH)->GetWindowTextW(szTemp);
-    m_App->WriteProfileStringW(_T("BearingRollersDlg"), _T("m_szSavePath"), szTemp);
+	m_App->WriteProfileStringW(_T("BearingRollersDlg"), _T("m_szSavePath"), szTemp);
 	szTemp.Format(_T("%ld"), m_lCIDIPix);
 	m_App->WriteProfileStringW(_T("BearingRollersDlg"), _T("m_lCIDIPix"), szTemp);
 	szTemp.Format(_T("%f"), m_FreDivFtr);
 	m_App->WriteProfileStringW(_T("BearingRollersDlg"), _T("m_FreDivFtr"), szTemp);
-	m_App->WriteProfileInt(_T("BearingRollersDlg"), _T("m_bSaveImageEnable"),m_CtrSaveImage.GetCheck());
+	m_App->WriteProfileInt(_T("BearingRollersDlg"), _T("m_bSaveImageEnable"), m_CtrSaveImage.GetCheck());
 	m_App->WriteProfileInt(_T("BearingRollersDlg"), _T("m_nImageProcessingPrecision"), m_CtrDIPP.GetPos());
 	m_App->WriteProfileInt(_T("BearingRollersDlg"), _T("m_nImagePreprocessingThreshold"), m_CtrImagePreprocessingThreshold.GetPos());
 
@@ -340,7 +340,7 @@ void CBearingRollersDlg::OnNMDblclkDatabaselist(NMHDR *pNMHDR, LRESULT *pResult)
 	CString s1 = m_wndList.GetItemText(nItem, 0);
 	CString s2 = m_wndList.GetItemText(nItem, 1);
 	CString s3 = m_wndList.GetItemText(nItem, 2);
-	_stprintf(sql, _T("delete from BearingRoller where Radius='%s' and Length='%s' and Taper='%s'"), s1,s2,s3);
+	_stprintf(sql, _T("delete from BearingRoller where Radius='%s' and Length='%s' and Taper='%s'"), s1, s2, s3);
 	LOG(TRACE) << sql;
 	SQLiteCommand cmd(&sqlite, sql);
 	//cmd.BindParam(1, s);
@@ -370,7 +370,7 @@ void CBearingRollersDlg::OnBnClickedDtdb()
 	CString str;
 	GetDlgItem(IDC_RADIUS)->GetWindowTextW(str);
 	cmd.BindParam(1, str);
-	GetDlgItem(IDC_LENGTH)->GetWindowTextW(str); 
+	GetDlgItem(IDC_LENGTH)->GetWindowTextW(str);
 	cmd.BindParam(2, str);
 	GetDlgItem(IDC_TAPER)->GetWindowTextW(str);
 	cmd.BindParam(3, str);
