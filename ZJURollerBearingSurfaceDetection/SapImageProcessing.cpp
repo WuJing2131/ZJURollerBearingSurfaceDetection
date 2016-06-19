@@ -82,6 +82,8 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 	threshold(*src_gray, threshold_output, thresh, 255, THRESH_BINARY);
 	findContours(threshold_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 
+	
+
 	//³ýÈ¥Ì«³¤»òÕßÌ«¶ÌµÄÂÖÀª  
 	int cmin = 23;  //23  200
 	int cmax = 200;  //200 700
@@ -102,7 +104,9 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 	std::vector<double> vecNum;
 	itc = contours.begin();
 	LOG(TRACE) << "***************Bearing Roller Defect characteristic moment[hu]***************";
-	int idefectsCounts = 0;
+	int idefectsCounts = 0; 
+	int  RustCount = 0;   //ÐâÊ´
+	int  EtchCount = 0;   //¿ÌÊ´
 	while (itc != contours.end())
 	{
 		idefectsCounts++;
@@ -124,11 +128,13 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 		if (humoment.hu1 > 0.6)
 		{
 			LOG(TRACE) << vecNum ;
+			RustCount++;
 			LOG(TRACE) << L"*******************ÐâÊ´************************";
 		}
 		else
 		{
 			LOG(TRACE) << vecNum;
+			EtchCount++;
 			LOG(TRACE) << L"*******************¿ÌÊ´************************";
 		}
 		
@@ -152,6 +158,7 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 	Mat drawing = Mat::zeros(threshold_output.size(), CV_8UC3);
 	dst->create(threshold_output.size(), CV_8UC3);
 	drawing.copyTo(*dst);
+	//Displaying_Random_Text(dst, "Test Text", 1000, 200);
 	for (size_t i = 0; i< contours.size(); i++)
 	{
 		Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
@@ -167,7 +174,31 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 	alpha = 0.4;
 	beta = (1.0 - alpha);
 	addWeighted(*src, alpha, *dst, beta, 0.0, *src);
+	int infoConut = 0;
+	char czInfo[100];
+	sprintf(czInfo, "ThreadValue: %d", thresh);
+	Displaying_Random_Text(dst, czInfo, 500, (++infoConut)*45);
 
+	sprintf(czInfo, "Defects Counts: %d", idefectsCounts);
+	Displaying_Random_Text(dst, czInfo, 500, (++infoConut) * 45);
+
+	sprintf(czInfo, "Rust Counts: %d", RustCount);
+	Displaying_Random_Text(dst, czInfo, 500, (++infoConut) * 45);
+
+	sprintf(czInfo, "Etch Counts: %d", EtchCount);
+	Displaying_Random_Text(dst, czInfo, 500, (++infoConut) * 45);
+
+	CTime m_timeImageSequence = CTime::GetCurrentTime();
+	CString szTime = m_timeImageSequence.Format("Detect Time: %Y/%m/%d %H:%M:%S");
+	char* pszMultiByte = NULL;
+	int iSize;
+	iSize = WideCharToMultiByte(CP_ACP, 0, szTime, -1, NULL, 0, NULL, NULL);
+	pszMultiByte = (char*)malloc((iSize + 1));
+	WideCharToMultiByte(CP_ACP, 0, szTime, -1, pszMultiByte, iSize, NULL, NULL);
+	Displaying_Random_Text(dst, pszMultiByte, 500, (++infoConut) * 45);
+	delete pszMultiByte;
+
+	
 	if (idefectsCounts != 0)
 	{
 		Mat logo = cv::imread("judgelog/defective.bmp");
@@ -184,6 +215,8 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 		cv::Mat imageROI;
 		imageROI = (*dst)(cv::Rect(10, 10, logo.cols, logo.rows));
 		addWeighted(imageROI, 1.0, logo, 2.0, 0, imageROI);
+
+		//cvAddText();
 		//Beep(0x0fff, 100);
 	}
 	
@@ -194,11 +227,26 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 	Beep(0x0fff, 50);
 	Sleep(1000);*/
 	
+}
+
+
+void SapImageProcessing::Displaying_Random_Text(Mat *image, char* ShowInfo,int x,int y)
+{
+	//int lineType = 8;
+	Point org;
+	org.x = x;
+	org.y = y;
+	//Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
+	//putText(*image, ShowInfo, org, rng.uniform(0, 8),
+	//	rng.uniform(0, 100)*0.05 + 0.1, color, rng.uniform(1, 10), lineType); //
+	putText(*image, ShowInfo, org, FONT_HERSHEY_PLAIN,
+		3, CV_RGB(255, 255, 255),3);
 	
-	/*for (int i = 0; i < 10; i++)
-	{
-		Beep(0x0fff, 20);
-		Sleep(100);
-	}*/
-	
+}
+
+
+Scalar SapImageProcessing::randomColor(RNG& rng)
+{
+	int icolor = (unsigned)rng;
+	return Scalar(icolor & 255, (icolor >> 8) & 255, (icolor >> 16) & 255);
 }

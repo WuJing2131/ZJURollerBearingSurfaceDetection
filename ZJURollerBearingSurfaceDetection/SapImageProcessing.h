@@ -26,8 +26,8 @@ public:
    // Constructor/Destructor
    SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext, Mat *pSrc, Mat *pDst, int Thread);
    virtual ~SapImageProcessing();
-
-   
+   void Displaying_Random_Text(Mat* image, char* window_name, int x, int y);
+   static Scalar randomColor(RNG& rng);
    int thresh = 40;
    int max_thresh = 255;
    RNG rng;
