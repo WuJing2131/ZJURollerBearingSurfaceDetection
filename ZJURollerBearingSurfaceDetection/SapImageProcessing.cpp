@@ -102,8 +102,10 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 	std::vector<double> vecNum;
 	itc = contours.begin();
 	LOG(TRACE) << "***************Bearing Roller Defect characteristic moment[hu]***************";
+	int idefectsCounts = 0;
 	while (itc != contours.end())
 	{
+		idefectsCounts++;
 		//Mat humomentMat(7, 1, CV_32FC1);
 		//计算所有的距  
 		CvMoments mom = moments(Mat(*itc++));
@@ -119,7 +121,17 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 		vecNum.push_back(humoment.hu6);
 		vecNum.push_back(humoment.hu7);
 		el::Loggers::removeFlag(el::LoggingFlag::NewLineForContainer);	
-		LOG(TRACE) << vecNum;
+		if (humoment.hu1 > 0.6)
+		{
+			LOG(TRACE) << vecNum ;
+			LOG(TRACE) << L"*******************锈蚀************************";
+		}
+		else
+		{
+			LOG(TRACE) << vecNum;
+			LOG(TRACE) << L"*******************刻蚀************************";
+		}
+		
 		vecNum.clear();
 		//计算并画出质心  
 		circle(*dst, Point(mom.m10 / mom.m00, mom.m01 / mom.m00), 2, Scalar(2), 2);
@@ -155,4 +167,38 @@ void SapImageProcessing::thresh_callback(int, void*,Mat *src, Mat *src_gray, Mat
 	alpha = 0.4;
 	beta = (1.0 - alpha);
 	addWeighted(*src, alpha, *dst, beta, 0.0, *src);
+
+	if (idefectsCounts != 0)
+	{
+		Mat logo = cv::imread("judgelog/defective.bmp");
+		Mat mask = cv::imread("judgelog/defective.bmp", 0);
+		cv::Mat imageROI;
+		imageROI = (*dst)(cv::Rect(10, 10, logo.cols, logo.rows));
+		addWeighted(imageROI, 1.0, logo, 2.0, 0, imageROI);
+		Beep(0x0fff, 10);
+	}
+	else
+	{
+		Mat logo = cv::imread("judgelog/voidofdefects.bmp");
+		Mat mask = cv::imread("judgelog/voidofdefects.bmp", 0);
+		cv::Mat imageROI;
+		imageROI = (*dst)(cv::Rect(10, 10, logo.cols, logo.rows));
+		addWeighted(imageROI, 1.0, logo, 2.0, 0, imageROI);
+		//Beep(0x0fff, 100);
+	}
+	
+	/*Beep(0x0fff, 20);
+	Sleep(1000);
+	Beep(0x0fff, 10);
+	Sleep(1000);
+	Beep(0x0fff, 50);
+	Sleep(1000);*/
+	
+	
+	/*for (int i = 0; i < 10; i++)
+	{
+		Beep(0x0fff, 20);
+		Sleep(100);
+	}*/
+	
 }
