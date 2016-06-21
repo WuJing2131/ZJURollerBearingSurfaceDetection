@@ -78,7 +78,7 @@ BOOL CZJURollerBearingSurfaceDetectionApp::InitInstance()
 	必须设置标记 LoggingFlag::StrictLogFileSizeCheck 否则,配置文件中MAX_LOG_FILE_SIZE = 1048576不生效
 	/////////////////////////////////////////////////////////////////////////*/
 	el::Loggers::addFlag(el::LoggingFlag::StrictLogFileSizeCheck);
-	el::Configurations conf("log.conf");
+	el::Configurations conf("logConfig.conf");
 	el::Loggers::reconfigureAllLoggers(conf);
 
 	/// 增加标记 NewLineForContainer，注意查看输出STL容器的效果  

@@ -3,16 +3,15 @@
 
 #include "stdafx.h"
 #include "ZJURollerBearingSurfaceDetection.h"
-#include "SerialPortDlg.h"
+#include "CommunicationConfigurationDlg.h"
 #include "afxdialogex.h"
 
+// CCommunicationConfigurationDlg 对话框
 
-// CSerialPortDlg 对话框
+IMPLEMENT_DYNAMIC(CCommunicationConfigurationDlg, CDialogEx)
 
-IMPLEMENT_DYNAMIC(CSerialPortDlg, CDialogEx)
-
-CSerialPortDlg::CSerialPortDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CSerialPortDlg::IDD, pParent)
+CCommunicationConfigurationDlg::CCommunicationConfigurationDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CCommunicationConfigurationDlg::IDD, pParent)
 	, m_intPort(_T(""))
 	, m_intBaudRate(_T(""))
 	, m_intDataBits(_T(""))
@@ -26,11 +25,11 @@ CSerialPortDlg::CSerialPortDlg(CWnd* pParent /*=NULL*/)
 
 }
 
-CSerialPortDlg::~CSerialPortDlg()
+CCommunicationConfigurationDlg::~CCommunicationConfigurationDlg()
 {
 }
 
-void CSerialPortDlg::DoDataExchange(CDataExchange* pDX)
+void CCommunicationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_CBString(pDX, IDC_PORT, m_intPort);
@@ -50,15 +49,15 @@ void CSerialPortDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CSerialPortDlg, CDialogEx)
-	ON_BN_CLICKED(IDOK, &CSerialPortDlg::OnBnClickedOk)
+BEGIN_MESSAGE_MAP(CCommunicationConfigurationDlg, CDialogEx)
+	ON_BN_CLICKED(IDOK, &CCommunicationConfigurationDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
-// CSerialPortDlg 消息处理程序
+// CCommunicationConfigurationDlg 消息处理程序
 
 
-BOOL CSerialPortDlg::OnInitDialog()
+BOOL CCommunicationConfigurationDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -112,56 +111,56 @@ BOOL CSerialPortDlg::OnInitDialog()
 }
 
 
-void CSerialPortDlg::LoadSettings()
+void CCommunicationConfigurationDlg::LoadSettings()
 {
-	m_intPort = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_intPort"), _T("COM5"));
-	m_intBaudRate = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_intBaudRate"), _T("115200"));
-	m_intDataBits = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_intDataBits"), _T("8"));
-	m_cParity = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_cParity"), _T("NO"));
-	m_intStopBits = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_intStopBits"), _T("1"));
-	m_szUSBVID = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_szUSBVID"), _T("C255"));
-	m_szUSBPID = m_App->GetProfileStringW(_T("CSerialPortDlg"), _T("m_szUSBPID"), _T("4355"));
-	//m_bUSBEnable = m_App->GetProfileIntW(_T("CSerialPortDlg"), _T("m_bUSBEnable"), FALSE);
+	m_intPort = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intPort"), _T("COM5"));
+	m_intBaudRate = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intBaudRate"), _T("115200"));
+	m_intDataBits = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intDataBits"), _T("8"));
+	m_cParity = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_cParity"), _T("NO"));
+	m_intStopBits = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intStopBits"), _T("1"));
+	m_szUSBVID = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_szUSBVID"), _T("C255"));
+	m_szUSBPID = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_szUSBPID"), _T("4355"));
+	//m_bUSBEnable = m_App->GetProfileIntW(_T("CCommunicationConfigurationDlg"), _T("m_bUSBEnable"), FALSE);
 }
-void CSerialPortDlg::SaveSettings()
+void CCommunicationConfigurationDlg::SaveSettings()
 {
 	CString szTemp;
 	GetDlgItemText(IDC_PORT, szTemp);
-	m_App->WriteProfileStringW(_T("CSerialPortDlg"), _T("m_intPort"), szTemp);
+	m_App->WriteProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intPort"), szTemp);
 	GetDlgItemText(IDC_BAUDBATE, szTemp);
-	m_App->WriteProfileStringW(_T("CSerialPortDlg"), _T("m_intBaudRate"), szTemp);
+	m_App->WriteProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intBaudRate"), szTemp);
 	GetDlgItemText(IDC_DATABITS, szTemp);
-	m_App->WriteProfileStringW(_T("CSerialPortDlg"), _T("m_intDataBits"), szTemp);
+	m_App->WriteProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intDataBits"), szTemp);
 	GetDlgItemText(IDC_PARITY, szTemp);
-	m_App->WriteProfileStringW(_T("CSerialPortDlg"), _T("m_cParity"), szTemp);
+	m_App->WriteProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_cParity"), szTemp);
 	GetDlgItemText(IDC_STOPBITS, szTemp);
-	m_App->WriteProfileStringW(_T("CSerialPortDlg"), _T("m_intStopBits"), szTemp);
+	m_App->WriteProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intStopBits"), szTemp);
 	GetDlgItemText(IDC_USBVID, szTemp);
-	m_App->WriteProfileStringW(_T("CSerialPortDlg"), _T("m_szUSBVID"), szTemp);
+	m_App->WriteProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_szUSBVID"), szTemp);
 	GetDlgItemText(IDC_USBPID, szTemp);
-	m_App->WriteProfileStringW(_T("CSerialPortDlg"), _T("m_szUSBPID"), szTemp);
+	m_App->WriteProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_szUSBPID"), szTemp);
 
-	//m_App->WriteProfileInt(_T("CSerialPortDlg"), _T("m_bUSBEnable"), m_CtrEnableUSBCommunication.GetCheck());
+	//m_App->WriteProfileInt(_T("CCommunicationConfigurationDlg"), _T("m_bUSBEnable"), m_CtrEnableUSBCommunication.GetCheck());
 }
 
-UINT CSerialPortDlg::GetPort()
+UINT CCommunicationConfigurationDlg::GetPort()
 {
 	m_intPort.TrimLeft(_T("COM"));
 	return _wtoi(m_intPort);
 }
-UINT CSerialPortDlg::GetBaudRate()
+UINT CCommunicationConfigurationDlg::GetBaudRate()
 {
 	return _wtoi(m_intBaudRate);
 }
-UINT CSerialPortDlg::GetDateBits()
+UINT CCommunicationConfigurationDlg::GetDateBits()
 {
 	return _wtoi(m_intDataBits);
 }
-char CSerialPortDlg::GetParity()
+char CCommunicationConfigurationDlg::GetParity()
 {
 	return m_cParity[0];
 }
-UINT CSerialPortDlg::GetStopBits()
+UINT CCommunicationConfigurationDlg::GetStopBits()
 {
 	if (m_intStopBits == _T("1"))
 		return 1;
@@ -171,25 +170,25 @@ UINT CSerialPortDlg::GetStopBits()
 		return 1;
 }
 
-BOOL CSerialPortDlg::IsEnableSerialPortCommunication()
+BOOL CCommunicationConfigurationDlg::IsEnableSerialPortCommunication()
 {
 	return m_SerialPortEnable;
 }
 
-CString CSerialPortDlg::GetUSBVID()
+CString CCommunicationConfigurationDlg::GetUSBVID()
 {
 	return m_szUSBVID;
 }
-CString CSerialPortDlg::GetUSBPID()
+CString CCommunicationConfigurationDlg::GetUSBPID()
 {
 	return m_szUSBPID;
 }
-BOOL CSerialPortDlg::IsEnableUSBCommunication()
+BOOL CCommunicationConfigurationDlg::IsEnableUSBCommunication()
 {
 	return m_bUSBEnable;
 }
 
-void CSerialPortDlg::OnBnClickedOk()
+void CCommunicationConfigurationDlg::OnBnClickedOk()
 {
 	UpdateData(TRUE);
 	SaveSettings();

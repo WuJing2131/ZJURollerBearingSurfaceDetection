@@ -2,15 +2,15 @@
 #include "afxwin.h"
 
 
-// CSerialPortDlg 对话框
+// CCommunicationConfigurationDlg 对话框
 
-class CSerialPortDlg : public CDialogEx
+class CCommunicationConfigurationDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(CSerialPortDlg)
+	DECLARE_DYNAMIC(CCommunicationConfigurationDlg)
 
 public:
-	CSerialPortDlg(CWnd* pParent = NULL);   // 标准构造函数
-	virtual ~CSerialPortDlg();
+	CCommunicationConfigurationDlg(CWnd* pParent = NULL);   // 标准构造函数
+	virtual ~CCommunicationConfigurationDlg();
 
 	// 对话框数据
 	enum { IDD = IDD_CSERIALPORT };

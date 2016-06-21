@@ -7,15 +7,15 @@ enum SetRefreshStates {
 	SelectAllToRefresh,
 	SelectSpecialToRefresh
 };
-// CBearingRollersDlg 对话框
+// CBearingRollersParameterDlg 对话框
 
-class CBearingRollersDlg : public CDialogEx
+class CBearingRollersParameterDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(CBearingRollersDlg)
+	DECLARE_DYNAMIC(CBearingRollersParameterDlg)
 
 public:
-	CBearingRollersDlg(CWnd* pParent = NULL);   // 标准构造函数
-	virtual ~CBearingRollersDlg();
+	CBearingRollersParameterDlg(CWnd* pParent = NULL);   // 标准构造函数
+	virtual ~CBearingRollersParameterDlg();
 
 	// 对话框数据
 	enum { IDD = IDD_PARAMETERS_DIALOG };

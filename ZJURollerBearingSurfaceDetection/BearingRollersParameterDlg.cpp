@@ -3,17 +3,17 @@
 
 #include "stdafx.h"
 #include "ZJURollerBearingSurfaceDetection.h"
-#include "BearingRollersDlg.h"
+#include "BearingRollersParameterDlg.h"
 #include "afxdialogex.h"
 #include "SapClassGui.h"
 #include "sqlite\sqlite3.h"
 
-// CBearingRollersDlg 对话框
+// CBearingRollersParameterDlg 对话框
 
-IMPLEMENT_DYNAMIC(CBearingRollersDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CBearingRollersParameterDlg, CDialogEx)
 
-CBearingRollersDlg::CBearingRollersDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CBearingRollersDlg::IDD, pParent)
+CBearingRollersParameterDlg::CBearingRollersParameterDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CBearingRollersParameterDlg::IDD, pParent)
 	, m_dRadius(0)
 	, m_dLength(0)
 	, m_dTaper(0)
@@ -29,11 +29,11 @@ CBearingRollersDlg::CBearingRollersDlg(CWnd* pParent /*=NULL*/)
 
 }
 
-CBearingRollersDlg::~CBearingRollersDlg()
+CBearingRollersParameterDlg::~CBearingRollersParameterDlg()
 {
 }
 
-void CBearingRollersDlg::DoDataExchange(CDataExchange* pDX)
+void CBearingRollersParameterDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_RADIUS, m_dRadius);
@@ -57,24 +57,24 @@ void CBearingRollersDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CBearingRollersDlg, CDialogEx)
-	ON_BN_CLICKED(IDOK, &CBearingRollersDlg::OnBnClickedOk)
-	ON_BN_CLICKED(IDC_CALCULATE, &CBearingRollersDlg::OnBnClickedCalculate)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_DIPPT, &CBearingRollersDlg::OnNMCustomdrawDippt)
-	ON_NOTIFY(TRBN_THUMBPOSCHANGING, IDC_DIPPT, &CBearingRollersDlg::OnTRBNThumbPosChangingDippt)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_DIPP, &CBearingRollersDlg::OnNMCustomdrawDipp)
-	ON_BN_CLICKED(IDCANCEL, &CBearingRollersDlg::OnBnClickedCancel)
-	ON_NOTIFY(NM_CLICK, IDC_DATABASELIST, &CBearingRollersDlg::OnNMClickDatabaselist)
-	ON_NOTIFY(NM_DBLCLK, IDC_DATABASELIST, &CBearingRollersDlg::OnNMDblclkDatabaselist)
-	ON_BN_CLICKED(IDC_DTDB, &CBearingRollersDlg::OnBnClickedDtdb)
-	ON_CBN_EDITCHANGE(IDC_DATABASECOMBO, &CBearingRollersDlg::OnCbnEditchangeDatabasecombo)
+BEGIN_MESSAGE_MAP(CBearingRollersParameterDlg, CDialogEx)
+	ON_BN_CLICKED(IDOK, &CBearingRollersParameterDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDC_CALCULATE, &CBearingRollersParameterDlg::OnBnClickedCalculate)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_DIPPT, &CBearingRollersParameterDlg::OnNMCustomdrawDippt)
+	ON_NOTIFY(TRBN_THUMBPOSCHANGING, IDC_DIPPT, &CBearingRollersParameterDlg::OnTRBNThumbPosChangingDippt)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_DIPP, &CBearingRollersParameterDlg::OnNMCustomdrawDipp)
+	ON_BN_CLICKED(IDCANCEL, &CBearingRollersParameterDlg::OnBnClickedCancel)
+	ON_NOTIFY(NM_CLICK, IDC_DATABASELIST, &CBearingRollersParameterDlg::OnNMClickDatabaselist)
+	ON_NOTIFY(NM_DBLCLK, IDC_DATABASELIST, &CBearingRollersParameterDlg::OnNMDblclkDatabaselist)
+	ON_BN_CLICKED(IDC_DTDB, &CBearingRollersParameterDlg::OnBnClickedDtdb)
+	ON_CBN_EDITCHANGE(IDC_DATABASECOMBO, &CBearingRollersParameterDlg::OnCbnEditchangeDatabasecombo)
 END_MESSAGE_MAP()
 
 
-// CBearingRollersDlg 消息处理程序
+// CBearingRollersParameterDlg 消息处理程序
 
 
-BOOL CBearingRollersDlg::OnInitDialog()
+BOOL CBearingRollersParameterDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -118,7 +118,7 @@ BOOL CBearingRollersDlg::OnInitDialog()
 }
 
 
-void CBearingRollersDlg::OnBnClickedOk()
+void CBearingRollersParameterDlg::OnBnClickedOk()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	// 关闭数据库  
@@ -144,7 +144,7 @@ void CBearingRollersDlg::OnBnClickedOk()
 }
 
 
-void CBearingRollersDlg::OnBnClickedCalculate()
+void CBearingRollersParameterDlg::OnBnClickedCalculate()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(TRUE);
@@ -153,7 +153,7 @@ void CBearingRollersDlg::OnBnClickedCalculate()
 
 }
 
-void CBearingRollersDlg::CalculateLine(double Radius, double Length, double Taper)
+void CBearingRollersParameterDlg::CalculateLine(double Radius, double Length, double Taper)
 {
 	m_lLine = 4800 * 3.5 * 2 * Radius / 67 / m_FreDivFtr;
 	m_lCIDIPix = Length / 20 * 2495;
@@ -162,7 +162,7 @@ void CBearingRollersDlg::CalculateLine(double Radius, double Length, double Tape
 }
 
 
-void CBearingRollersDlg::LoadSettings()
+void CBearingRollersParameterDlg::LoadSettings()
 {
 	m_dRadius = _wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_dRadius"), _T("8.5")));
 	m_dLength = _wtof(m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_dLength"), _T("30.0")));
@@ -177,7 +177,7 @@ void CBearingRollersDlg::LoadSettings()
 	//StringCbCopyW(m_szSavePath, m_App->GetProfileStringW(_T("BearingRollersDlg"), _T("m_szSavePath"), _T("D:/")), sizeof(m_szSavePath));
 }
 
-void CBearingRollersDlg::SaveSettings()
+void CBearingRollersParameterDlg::SaveSettings()
 {
 	CString szTemp;
 	szTemp.Format(_T("%ld"), m_lLine);
@@ -201,32 +201,32 @@ void CBearingRollersDlg::SaveSettings()
 }
 
 
-CString CBearingRollersDlg::GetImageSavePath()
+CString CBearingRollersParameterDlg::GetImageSavePath()
 {
 	return m_szSavePath;
 }
 
-long CBearingRollersDlg::GetHeigthLine()
+long CBearingRollersParameterDlg::GetHeigthLine()
 {
 	return m_lLine;
 }
 
-long CBearingRollersDlg::GetWeithLine()
+long CBearingRollersParameterDlg::GetWeithLine()
 {
 	return m_lCIDIPix;
 }
 
-int CBearingRollersDlg::GetImageProcessingPrecision()
+int CBearingRollersParameterDlg::GetImageProcessingPrecision()
 {
 	return m_nImageProcessingPrecision;
 }
 
-int CBearingRollersDlg::GetImagePreprocessingThreshold()
+int CBearingRollersParameterDlg::GetImagePreprocessingThreshold()
 {
 	return m_nImagePreprocessingThreshold;
 }
 
-void CBearingRollersDlg::OnNMCustomdrawDippt(NMHDR *pNMHDR, LRESULT *pResult)
+void CBearingRollersParameterDlg::OnNMCustomdrawDippt(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
@@ -237,7 +237,7 @@ void CBearingRollersDlg::OnNMCustomdrawDippt(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CBearingRollersDlg::OnTRBNThumbPosChangingDippt(NMHDR *pNMHDR, LRESULT *pResult)
+void CBearingRollersParameterDlg::OnTRBNThumbPosChangingDippt(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// 此功能要求 Windows Vista 或更高版本。
 	// _WIN32_WINNT 符号必须 >= 0x0600。
@@ -247,7 +247,7 @@ void CBearingRollersDlg::OnTRBNThumbPosChangingDippt(NMHDR *pNMHDR, LRESULT *pRe
 }
 
 
-void CBearingRollersDlg::OnNMCustomdrawDipp(NMHDR *pNMHDR, LRESULT *pResult)
+void CBearingRollersParameterDlg::OnNMCustomdrawDipp(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
@@ -258,7 +258,7 @@ void CBearingRollersDlg::OnNMCustomdrawDipp(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CBearingRollersDlg::RefreshListView(SetRefreshStates state)
+void CBearingRollersParameterDlg::RefreshListView(SetRefreshStates state)
 {
 	m_wndList.DeleteAllItems();//清空   
 	memset(sql, 0, sizeof(sql));
@@ -294,7 +294,7 @@ void CBearingRollersDlg::RefreshListView(SetRefreshStates state)
 }
 
 
-void CBearingRollersDlg::OnBnClickedCancel()
+void CBearingRollersParameterDlg::OnBnClickedCancel()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 关闭数据库  
@@ -303,7 +303,7 @@ void CBearingRollersDlg::OnBnClickedCancel()
 }
 
 
-void CBearingRollersDlg::OnNMClickDatabaselist(NMHDR *pNMHDR, LRESULT *pResult)
+void CBearingRollersParameterDlg::OnNMClickDatabaselist(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	int nItem = -1;
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
@@ -326,7 +326,7 @@ void CBearingRollersDlg::OnNMClickDatabaselist(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CBearingRollersDlg::OnNMDblclkDatabaselist(NMHDR *pNMHDR, LRESULT *pResult)
+void CBearingRollersParameterDlg::OnNMDblclkDatabaselist(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	int nItem = -1;
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
@@ -358,7 +358,7 @@ void CBearingRollersDlg::OnNMDblclkDatabaselist(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CBearingRollersDlg::OnBnClickedDtdb()
+void CBearingRollersParameterDlg::OnBnClickedDtdb()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 当一次性插入多条记录时候，采用事务的方式，提高效率  
@@ -407,7 +407,7 @@ void CBearingRollersDlg::OnBnClickedDtdb()
 }
 
 
-void CBearingRollersDlg::OnCbnEditchangeDatabasecombo()
+void CBearingRollersParameterDlg::OnCbnEditchangeDatabasecombo()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	RefreshListView(SetRefreshStates::SelectSpecialToRefresh);

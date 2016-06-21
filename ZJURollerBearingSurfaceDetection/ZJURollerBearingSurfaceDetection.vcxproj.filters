@@ -36,16 +36,10 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="BearingRollersDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="SapImageProcessing.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SerialPort.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialPortDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CvvImage.h">
@@ -63,6 +57,12 @@
     <ClInclude Include="sqlite\sqlite3.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="BearingRollersParameterDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommunicationConfigurationDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZJURollerBearingSurfaceDetection.cpp">
@@ -74,16 +74,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="BearingRollersDlg.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="SapImageProcessing.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SerialPort.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialPortDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CvvImage.cpp">
@@ -93,6 +87,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="sqlite\SQLite.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BearingRollersParameterDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommunicationConfigurationDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,7 +105,7 @@
     <None Include="res\ZJURollerBearingSurfaceDetection.rc2">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="log.conf">
+    <None Include="logConfig.conf">
       <Filter>日志设置</Filter>
     </None>
   </ItemGroup>
