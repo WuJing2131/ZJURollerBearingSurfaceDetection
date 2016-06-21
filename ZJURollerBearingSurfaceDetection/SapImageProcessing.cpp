@@ -16,7 +16,7 @@ SapImageProcessing::SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCall
 	// m_ColorConv = pColorConv;
 	m_Src = pSrc;
 	m_Dst = pDst;
-	thresh = Thread;
+	m_thresh = Thread;
 }
 
 SapImageProcessing::~SapImageProcessing()
@@ -83,7 +83,7 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 
-	threshold(*src_gray, threshold_output, thresh, 255, THRESH_BINARY);
+	threshold(*src_gray, threshold_output, m_thresh, 255, THRESH_BINARY);
 	findContours(threshold_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 
@@ -165,7 +165,7 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 	//Displaying_Random_Text(dst, "Test Text", 1000, 200);
 	for (size_t i = 0; i < contours.size(); i++)
 	{
-		Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
+		Scalar color = Scalar(m_rng.uniform(0, 255), m_rng.uniform(0, 255), m_rng.uniform(0, 255));
 		// contour
 		drawContours(*dst, contours, (int)i, color, 1, 8, vector<Vec4i>(), 0, Point());
 		// ellipse
@@ -175,12 +175,12 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 		for (int j = 0; j < 4; j++)
 			line(*dst, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
 	}
-	alpha = 0.4;
-	beta = (1.0 - alpha);
-	addWeighted(*src, alpha, *dst, beta, 0.0, *src);
+	m_alpha = 0.4;
+	m_beta = (1.0 - m_alpha);
+	addWeighted(*src, m_alpha, *dst, m_beta, 0.0, *src);
 	int infoConut = 0;
 	char czInfo[100];
-	sprintf(czInfo, "Thread Value: %d", thresh);
+	sprintf(czInfo, "Thread Value: %d", m_thresh);
 	Displaying_Random_Text(dst, czInfo, 500, (++infoConut) * 45);
 
 	sprintf(czInfo, "Defects Counts: %d", idefectsCounts);

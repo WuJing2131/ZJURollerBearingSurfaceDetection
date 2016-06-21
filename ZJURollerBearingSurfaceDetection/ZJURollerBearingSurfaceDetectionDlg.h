@@ -36,21 +36,21 @@ class CZJURollerBearingSurfaceDetectionDlg : public CDialogEx
 	// Constructor
 public:
 	explicit CZJURollerBearingSurfaceDetectionDlg(CWnd* pParent = NULL);	// Standard Constructor
-	BOOL CreateObjects();   
-	BOOL DestroyObjects();
-	void UpdateMenu();
-	void UpdateTitleBar();
 	static void XferCallback(SapXferCallbackInfo *pInfo);
 	static void SignalCallback(SapAcqCallbackInfo *pInfo);
 	static void ImageProcessedCallback(SapProCallbackInfo *pInfo);
 	static void ViewCallback(SapViewCallbackInfo *pInfo);
+	BOOL CreateObjects();   
+	BOOL DestroyObjects();
+	BOOL CheckPixelFormat(char* mode);
+	void UpdateMenu();
+	void UpdateTitleBar();
 	void GetSignalStatus();
 	void GetSignalStatus(SapAcquisition::SignalStatus signalStatus);
-	BOOL CheckPixelFormat(char* mode);
-
+	
 	//Cameras flat field correction parameters
 	BOOL	m_FlatFieldEnabled;
-	BOOL  m_FlatFieldUseROI;
+	BOOL    m_FlatFieldUseROI;
 	BOOL	m_FlatFieldUseHardware;
 	BOOL	m_FlatFieldPixelReplacement;
 
@@ -68,13 +68,13 @@ public:
 	void LoadSettings();
 	void SaveSettings();
 
-	void  CmdToLowerComputer();    //Sends a command to the next crew procedures
+	void CmdToLowerComputer();    //Sends a command to the next crew procedures
 	void showMatImgToWndResult();  //Image display processing after
 	void showMatImgToWndComposite();  //The original image in the processed image superposition
 	void SetImageFileSaveSetting(Mat*mat, CString HeadString);   //图像保存  HeadString==Null 保存采集的原图像
 
 	//Common processing function (character conversion)
-	int DoStr2Hex(CString str, char* data);
+	int  DoStr2Hex(CString str, char* data);
 	char DoHexChar(char c);
 	BOOL WChar2MByte(LPCWSTR lpSrc, LPSTR lpDest, int nlen);
 	byte DoCheckSum(unsigned char *buffer, int   size);
@@ -88,26 +88,26 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV Support
 
 protected:
-	HICON m_hIcon;
-	CString  m_appTitle;
+	HICON          m_hIcon;
+	CString        m_appTitle;
 
 	CMenu          m_Menu;
 	CStatusBar     m_wndStatusBar; //Status Bar Object
 	CToolBar       m_AcqConwndToolBar;
 	CToolBar       m_FileConwndToolBar;
-	CImageWnd	   *m_ImageWnd;
+	CImageWnd	  *m_ImageWnd;
 
-	SapAcquisition *m_Acq;
-	SapBuffer	   *m_Buffers;
-	SapTransfer	   *m_Xfer;
-	SapView        *m_View;
-	SapFlatField   *m_FlatField;
-	SapBuffer	   *m_ProcessBuffers;
-	SapGio         *m_Gio;
-	SapLut         *m_Lut;
+	SapAcquisition     *m_Acq;
+	SapBuffer	       *m_Buffers;
+	SapTransfer	       *m_Xfer;
+	SapView            *m_View;
+	SapFlatField       *m_FlatField;
+	SapBuffer	       *m_ProcessBuffers;
+	SapGio             *m_Gio;
+	SapLut             *m_Lut;
 	SapImageProcessing *m_ProcessingImage;
 	SapPerformance     *m_Performance;    //detected time in Process Images
-	BOOL m_IsSignalDetected;   // TRUE if camera signal is detected
+	BOOL                m_IsSignalDetected;   // TRUE if camera signal is detected
 
 	//Generated message mapping function
 	virtual BOOL OnInitDialog();
@@ -151,15 +151,15 @@ protected:
 	afx_msg void OnAnalysisHistogram();
 	DECLARE_MESSAGE_MAP()
 public:
-	CWinApp *m_App;
-	CTime m_timeImageSequence;
-	CStatic m_viewWnd;
+	CWinApp *  m_App;
+	CTime      m_timeImageSequence;
+	CStatic    m_viewWnd;
 	CScrollBar m_verticalScr;
 	CScrollBar m_horizontalScr;
-	CStatic m_statusWnd;
-	CString m_szSavePath;
-	CString m_szTempImageSavePath;
-	BOOL m_bSaveImageEnable;
+	CStatic    m_statusWnd;
+	CString    m_szSavePath;
+	CString    m_szTempImageSavePath;
+	BOOL       m_bSaveImageEnable;
 
 	//Communication type  USB parameters
 	CString m_szUsbVID;
@@ -167,30 +167,30 @@ public:
 
 	//Communication type  SeialPort parameters
 	CSerialPort m_serialPort;
-	UINT m_intPort;
-	UINT m_intBaudRate;
-	UINT m_intDataBits;
-	char m_cParity;
-	UINT m_intStopBits;
-	BOOL m_bSerialPortOpen = FALSE;
-	UCHAR m_SerialRecv[PKG_SIZE + 1];		//Serial Port Receive Array
-	UCHAR m_pkg[PKG_SIZE + 1];				//Store the serial port to receive packets
-	LONG  m_lRXCount = 0;
-	LONG  m_lTXCount = 0;
+	UINT        m_intPort;
+	UINT        m_intBaudRate;
+	UINT        m_intDataBits;
+	char        m_cParity;
+	UINT        m_intStopBits;
+	BOOL        m_bSerialPortOpen = FALSE;
+	UCHAR       m_SerialRecv[PKG_SIZE + 1];		//Serial Port Receive Array
+	UCHAR       m_pkg[PKG_SIZE + 1];				//Store the serial port to receive packets
+	LONG        m_lRXCount = 0;
+	LONG        m_lTXCount = 0;
 	
 	//OpenCV Image Data Structure
-	Mat *m_pSrc;   
-	Mat *m_pDst;
-	CWnd* m_pWndImageResult;
-	CWnd* m_pWndImageComposite;
+	Mat *  m_pSrc;   
+	Mat *  m_pDst;
+	CWnd*  m_pWndImageResult;
+	CWnd*  m_pWndImageComposite;
 
-	void* m_pData;
-	int* m_numRead;
-	int m_countLine;
+	void*  m_pData;
+	int*   m_numRead;
+	int    m_countLine;
 	//BOOL m_IsProBufFinshed;
-	LONG m_lImageWidth = 2495;
-	LONG m_lImageHeight;
-	int m_nMImageProcessingPrecision = 99;  
-	int m_nImagePreprocessingThreshold = 15;
+	LONG   m_lImageWidth = 2495;
+	LONG   m_lImageHeight;
+	int    m_nMImageProcessingPrecision = 99;  
+	int    m_nImagePreprocessingThreshold = 15;
 	
 };

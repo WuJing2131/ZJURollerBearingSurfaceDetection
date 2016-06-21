@@ -1,14 +1,12 @@
-#pragma once
-
 #include <opencv2\opencv.hpp>
 #include "CvvImage.h"
 #include "afxwin.h"
+#pragma once
 
 using namespace cv;
-
 using namespace std;
-// CHistogramDlg 对话框
 
+// CHistogramDlg 对话框
 class CHistogramDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CHistogramDlg)
@@ -18,8 +16,7 @@ public:
 	virtual ~CHistogramDlg();
 	void DrawPicToHDC(Mat *img, CWnd* pWnd);
 
-	Mat *m_Histogram;
-	CWnd * HistImageBox;
+	
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_HISTGRAM };
@@ -30,5 +27,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	CWnd * HistImageBox;
+	Mat *m_Histogram;
 	CStatic m_ImageHistogram;
 };

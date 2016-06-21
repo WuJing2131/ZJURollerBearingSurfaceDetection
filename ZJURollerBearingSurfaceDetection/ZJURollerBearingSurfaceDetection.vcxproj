@@ -79,7 +79,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>D:\OpenCV\OpenCV3.1.0\opencv\build\include;D:\OpenCV\OpenCV3.1.0\opencv\build\include\opencv;D:\OpenCV\OpenCV3.1.0\opencv\build\include\opencv2;$(ProjectDir)LibUSBWin32\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\OpenCV\OpenCV3.1.0\opencv\build\include;D:\OpenCV\OpenCV3.1.0\opencv\build\include\opencv;D:\OpenCV\OpenCV3.1.0\opencv\build\include\opencv2;$(ProjectDir)LibUSBWin32\include;$(ProjectDir)nedmalloc;$(IncludePath)</IncludePath>
     <LibraryPath>D:\OpenCV\OpenCV3.1.0\opencv\build\x64\vc14\lib;$(ProjectDir)LibUSBWin32\lib\msvc_x64;$(ProjectDir)sqlite;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ProjectDir)LibUSBWin32\bin\amd64;$(ReferencePath)</ReferencePath>
   </PropertyGroup>

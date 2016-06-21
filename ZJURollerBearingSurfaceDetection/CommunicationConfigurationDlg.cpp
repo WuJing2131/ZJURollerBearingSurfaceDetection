@@ -113,13 +113,13 @@ BOOL CCommunicationConfigurationDlg::OnInitDialog()
 
 void CCommunicationConfigurationDlg::LoadSettings()
 {
-	m_intPort = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intPort"), _T("COM5"));
+	m_intPort     = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intPort"), _T("COM5"));
 	m_intBaudRate = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intBaudRate"), _T("115200"));
 	m_intDataBits = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intDataBits"), _T("8"));
-	m_cParity = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_cParity"), _T("NO"));
+	m_cParity     = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_cParity"), _T("NO"));
 	m_intStopBits = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_intStopBits"), _T("1"));
-	m_szUSBVID = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_szUSBVID"), _T("C255"));
-	m_szUSBPID = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_szUSBPID"), _T("4355"));
+	m_szUSBVID    = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_szUSBVID"), _T("C255"));
+	m_szUSBPID    = m_App->GetProfileStringW(_T("CCommunicationConfigurationDlg"), _T("m_szUSBPID"), _T("4355"));
 	//m_bUSBEnable = m_App->GetProfileIntW(_T("CCommunicationConfigurationDlg"), _T("m_bUSBEnable"), FALSE);
 }
 void CCommunicationConfigurationDlg::SaveSettings()

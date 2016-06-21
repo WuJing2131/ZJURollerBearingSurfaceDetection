@@ -17,7 +17,7 @@
 #define CRTDBG_MAP_ALLOC   //内存泄漏检测
 #ifdef _DEBUG
 //#include "vld.h"
-#define new DEBUG_NEW
+#define new DEBUG_NEW  // 调试模式下new 会被替换为 DEBUG_NEW 可以定位内存泄露
 #endif
 
 using namespace std;

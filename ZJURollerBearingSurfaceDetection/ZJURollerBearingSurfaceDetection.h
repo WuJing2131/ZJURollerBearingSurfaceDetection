@@ -9,6 +9,7 @@
 #endif
 
 #include "resource.h"		// 主符号
+
 #define ELPP_STL_LOGGING  
 #define ELPP_UNICODE     //使日志库支持unicode 编码
 #include "easylogging++.h"

@@ -102,9 +102,9 @@ BOOL CBearingRollersParameterDlg::OnInitDialog()
 	LOG(TRACE) << " Load DataBase sqlite/BearingRollerType.db...";
 	TCHAR *szDbPath = _T("sqlite/BearingRollerType.db");
 
-	if (!sqlite.Open(szDbPath))
+	if (!m_sqlite.Open(szDbPath))
 	{
-		_tprintf(_T("%s\n"), sqlite.GetLastErrorMsg());
+		_tprintf(_T("%s\n"), m_sqlite.GetLastErrorMsg());
 		LOG(TRACE) << " Load DataBase Failed...";
 		return FALSE;
 	}
@@ -122,7 +122,7 @@ void CBearingRollersParameterDlg::OnBnClickedOk()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	// 关闭数据库  
-	sqlite.Close();
+	m_sqlite.Close();
 
 	UpdateData(TRUE);
 	SaveSettings();
@@ -261,19 +261,19 @@ void CBearingRollersParameterDlg::OnNMCustomdrawDipp(NMHDR *pNMHDR, LRESULT *pRe
 void CBearingRollersParameterDlg::RefreshListView(SetRefreshStates state)
 {
 	m_wndList.DeleteAllItems();//清空   
-	memset(sql, 0, sizeof(sql));
+	memset(sqlCommad, 0, sizeof(sqlCommad));
 	if (state == SetRefreshStates::SelectAllToRefresh)
 	{
-		_stprintf(sql, _T("%s"), _T("select * from BearingRoller"));
+		_stprintf(sqlCommad, _T("%s"), _T("select * from BearingRoller"));
 	}
 	else
 	{
 		CString str;
 		GetDlgItem(IDC_COMBO1)->GetWindowTextW(str);
-		_stprintf(sql, _T("select * from BearingRoller where Radius like '%%%s%%'"), str);
+		_stprintf(sqlCommad, _T("select * from BearingRoller where Radius like '%%%s%%'"), str);
 	}
-	LOG(TRACE) << sql;
-	SQLiteDataReader Reader = sqlite.ExcuteQuery(sql);
+	LOG(TRACE) << sqlCommad;
+	SQLiteDataReader Reader = m_sqlite.ExcuteQuery(sqlCommad);
 
 	int index = 0;
 	int len = 0;
@@ -298,7 +298,7 @@ void CBearingRollersParameterDlg::OnBnClickedCancel()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 关闭数据库  
-	sqlite.Close();
+	m_sqlite.Close();
 	CDialogEx::OnCancel();
 }
 
@@ -335,24 +335,24 @@ void CBearingRollersParameterDlg::OnNMDblclkDatabaselist(NMHDR *pNMHDR, LRESULT 
 	{
 		nItem = pNMItemActivate->iItem;
 	}
-	sqlite.BeginTransaction();
-	memset(sql, 0, sizeof(sql));
+	m_sqlite.BeginTransaction();
+	memset(sqlCommad, 0, sizeof(sqlCommad));
 	CString s1 = m_wndList.GetItemText(nItem, 0);
 	CString s2 = m_wndList.GetItemText(nItem, 1);
 	CString s3 = m_wndList.GetItemText(nItem, 2);
-	_stprintf(sql, _T("delete from BearingRoller where Radius='%s' and Length='%s' and Taper='%s'"), s1, s2, s3);
-	LOG(TRACE) << sql;
-	SQLiteCommand cmd(&sqlite, sql);
+	_stprintf(sqlCommad, _T("delete from BearingRoller where Radius='%s' and Length='%s' and Taper='%s'"), s1, s2, s3);
+	LOG(TRACE) << sqlCommad;
+	SQLiteCommand cmd(&m_sqlite, sqlCommad);
 	//cmd.BindParam(1, s);
-	if (!sqlite.ExcuteNonQuery(sql))
+	if (!m_sqlite.ExcuteNonQuery(sqlCommad))
 	{
-		_tprintf(_T("%s\n"), sqlite.GetLastErrorMsg());
+		_tprintf(_T("%s\n"), m_sqlite.GetLastErrorMsg());
 		return;
 	}
 	// 清空cmd  
 	cmd.Clear();
 	// 提交事务  
-	sqlite.CommitTransaction();
+	m_sqlite.CommitTransaction();
 	m_wndList.DeleteItem(nItem);
 	*pResult = 0;
 }
@@ -362,11 +362,11 @@ void CBearingRollersParameterDlg::OnBnClickedDtdb()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 当一次性插入多条记录时候，采用事务的方式，提高效率  
-	sqlite.BeginTransaction();
-	memset(sql, 0, sizeof(sql));
-	_stprintf(sql, _T("insert into BearingRoller(Radius,Length,Taper) values(?,?,?)"));
-	LOG(TRACE) << sql;
-	SQLiteCommand cmd(&sqlite, sql);
+	m_sqlite.BeginTransaction();
+	memset(sqlCommad, 0, sizeof(sqlCommad));
+	_stprintf(sqlCommad, _T("insert into BearingRoller(Radius,Length,Taper) values(?,?,?)"));
+	LOG(TRACE) << sqlCommad;
+	SQLiteCommand cmd(&m_sqlite, sqlCommad);
 	CString str;
 	GetDlgItem(IDC_RADIUS)->GetWindowTextW(str);
 	cmd.BindParam(1, str);
@@ -374,10 +374,10 @@ void CBearingRollersParameterDlg::OnBnClickedDtdb()
 	cmd.BindParam(2, str);
 	GetDlgItem(IDC_TAPER)->GetWindowTextW(str);
 	cmd.BindParam(3, str);
-	if (!sqlite.ExcuteNonQuery(&cmd))
+	if (!m_sqlite.ExcuteNonQuery(&cmd))
 	{
-		_tprintf(_T("%s\n"), sqlite.GetLastErrorMsg());
-		LOG(TRACE) << CStringA(sqlite.GetLastErrorMsg());
+		_tprintf(_T("%s\n"), m_sqlite.GetLastErrorMsg());
+		LOG(TRACE) << CStringA(m_sqlite.GetLastErrorMsg());
 		return;
 	}
 
@@ -402,7 +402,7 @@ void CBearingRollersParameterDlg::OnBnClickedDtdb()
 	// 清空cmd  
 	cmd.Clear();
 	// 提交事务  
-	sqlite.CommitTransaction();
+	m_sqlite.CommitTransaction();
 	RefreshListView(SetRefreshStates::SelectAllToRefresh);
 }
 
