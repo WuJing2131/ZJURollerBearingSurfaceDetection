@@ -4,19 +4,19 @@
 #include <stdio.h>
 #include "SapImageProcessing.h"
 #include "ZJURollerBearingSurfaceDetection.h"
-
+#include "CommonMethod.h"
 
 //
 // Constructor/Destructor
 //
-SapImageProcessing::SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext, Mat *pSrc, Mat *pDst, int Thread)
+SapImageProcessing::SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext, cv::Mat *pSrc, cv::Mat *pDst, int Thread)
 	: SapProcessing(pBuffers, pCallback, pContext)
 {
 	m_ProcessBuffers = pBuffers;
 	// m_ColorConv = pColorConv;
 	m_pImageProcessResult = pSrc;
 	m_pImageProcessComposite = pDst;
-	m_thresh = Thread;
+	m_nthresh = Thread;
 }
 
 SapImageProcessing::~SapImageProcessing()
@@ -46,7 +46,7 @@ BOOL SapImageProcessing::Run()
 	//}
 
 
-	Mat src_gray(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC1, (void*)pData);
+	cv::Mat src_gray(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC1, (void*)pData);
 	//Mat src(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC3, (void*)pData);
 	/*m_Src->create(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC1);
 	m_Src->data = pData;*/
@@ -57,11 +57,11 @@ BOOL SapImageProcessing::Run()
 	//cvtColor(src_gray, *m_Src, COLOR_GRAY2BGR);
 
 	*m_pImageProcessResult = src_gray.clone();
-	cvtColor(*m_pImageProcessResult, *m_pImageProcessResult, COLOR_GRAY2BGR);
+	cvtColor(*m_pImageProcessResult, *m_pImageProcessResult, cv::COLOR_GRAY2BGR);
 
 
 	//Mat dst; GaussianBlur
-	blur(src_gray, src_gray, Size(3, 3));
+	blur(src_gray, src_gray, cv::Size(3, 3));
 	//GaussianBlur(src_gray, src_gray, Size(3, 3),0,0);
 	//medianBlur(src_gray, src_gray, 3);
 	//bilateralFilter(src_gray, src_gray, 5, 10, 2);
@@ -77,14 +77,14 @@ BOOL SapImageProcessing::Run()
 	return TRUE;
 }
 
-void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Mat *dst)
+void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_gray, cv::Mat *dst)
 {
-	Mat threshold_output;
-	vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
+	cv::Mat threshold_output;
+	std::vector<std::vector<cv::Point> > contours;
+	std::vector<cv::Vec4i> hierarchy;
 
-	threshold(*src_gray, threshold_output, m_thresh, 255, THRESH_BINARY);
-	findContours(threshold_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
+	threshold(*src_gray, threshold_output, m_nthresh, 255, cv::THRESH_BINARY);
+	findContours(threshold_output, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
 
 
 
@@ -92,7 +92,7 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 	int cmin = 23;  //23  200
 	int cmax = 200;  //200 700
 					 //vector<Vec4i>::iterator itc = contours.begin();
-	vector<vector<Point>>::iterator itc = contours.begin();
+	std::vector<std::vector<cv::Point>>::iterator itc = contours.begin();
 	while (itc != contours.end())
 	{
 
@@ -113,10 +113,10 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 	int  EtchCount = 0;   //刻蚀
 	while (itc != contours.end())
 	{
-		idefectsCounts++;
+		++idefectsCounts;
 		//Mat humomentMat(7, 1, CV_32FC1);
 		//计算所有的距  
-		CvMoments mom = moments(Mat(*itc++));
+		CvMoments mom = cv::moments(cv::Mat(*itc++));
 		//CvMoments moment;
 		//cvMoments(src, &moment, 2);   //第三个像素点非0，则所有的0像素点被当做0，非0像素点被当做1  
 		CvHuMoments humoment;
@@ -132,47 +132,47 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 		if (humoment.hu1 > 0.6)
 		{
 			LOG(TRACE) << vecNum;
-			RustCount++;
+			++RustCount;
 			LOG(TRACE) << L"*******************锈蚀************************";
 		}
 		else
 		{
 			LOG(TRACE) << vecNum;
-			EtchCount++;
+			++EtchCount;
 			LOG(TRACE) << L"*******************刻蚀************************";
 		}
 
 		vecNum.clear();
 		//计算并画出质心  
-		circle(*dst, Point(mom.m10 / mom.m00, mom.m01 / mom.m00), 2, Scalar(2), 2);
+		circle(*dst, cv::Point(mom.m10 / mom.m00, mom.m01 / mom.m00), 2, cv::Scalar(2), 2);
 	}
 	LOG(TRACE) << "*****************************************************************************";
-	vector<RotatedRect> minRect(contours.size());
-	vector<RotatedRect> minEllipse(contours.size());
+	std::vector<cv::RotatedRect> minRect(contours.size());
+	std::vector<cv::RotatedRect> minEllipse(contours.size());
 
-	for (size_t i = 0; i < contours.size(); i++)
+	for (size_t i = 0; i < contours.size(); ++i)
 	{
-		minRect[i] = minAreaRect(Mat(contours[i]));
+		minRect[i] = cv::minAreaRect(cv::Mat(contours[i]));
 		if (contours[i].size() > 5)
 		{
-			minEllipse[i] = fitEllipse(Mat(contours[i]));
+			minEllipse[i] = cv::fitEllipse(cv::Mat(contours[i]));
 		}
 	}
 
-	Mat drawing = Mat::zeros(threshold_output.size(), CV_8UC3);
+	cv::Mat drawing = cv::Mat::zeros(threshold_output.size(), CV_8UC3);
 	dst->create(threshold_output.size(), CV_8UC3);
 	drawing.copyTo(*dst);
 	//Displaying_Random_Text(dst, "Test Text", 1000, 200);
-	for (size_t i = 0; i < contours.size(); i++)
+	for (size_t i = 0; i < contours.size(); ++i)
 	{
-		Scalar color = Scalar(m_rng.uniform(0, 255), m_rng.uniform(0, 255), m_rng.uniform(0, 255));
+		cv::Scalar color = cv::Scalar(m_rng.uniform(0, 255), m_rng.uniform(0, 255), m_rng.uniform(0, 255));
 		// contour
-		drawContours(*dst, contours, (int)i, color, 1, 8, vector<Vec4i>(), 0, Point());
+		drawContours(*dst, contours, static_cast<int>(i), color, 1, 8, std::vector<cv::Vec4i>(), 0, cv::Point());
 		// ellipse
 		ellipse(*dst, minEllipse[i], color, 2, 8);
 		// rotated rectangle
-		Point2f rect_points[4]; minRect[i].points(rect_points);
-		for (int j = 0; j < 4; j++)
+		cv::Point2f rect_points[4]; minRect[i].points(rect_points);
+		for (int j = 0; j < 4; ++j)
 			line(*dst, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
 	}
 	m_alpha = 0.4;
@@ -180,7 +180,7 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 	addWeighted(*src, m_alpha, *dst, m_beta, 0.0, *src);
 	int infoConut = 0;
 	char czInfo[100];
-	sprintf(czInfo, "Thread Value: %d", m_thresh);
+	sprintf(czInfo, "Thread Value: %d", m_nthresh);
 	Displaying_Random_Text(dst, czInfo, 500, (++infoConut) * 45);
 
 	sprintf(czInfo, "Defects Counts: %d", idefectsCounts);
@@ -200,18 +200,15 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 	CTime m_timeImageSequence = CTime::GetCurrentTime();
 	CString szTime = m_timeImageSequence.Format("Detect Time: %Y/%m/%d %H:%M:%S");
 	char* pszMultiByte = NULL;
-	int iSize;
-	iSize = WideCharToMultiByte(CP_ACP, 0, szTime, -1, NULL, 0, NULL, NULL);
-	pszMultiByte = (char*)malloc((iSize + 1));
-	WideCharToMultiByte(CP_ACP, 0, szTime, -1, pszMultiByte, iSize, NULL, NULL);
+	pszMultiByte = CCommonMethod::WCharToMByte(szTime);
 	Displaying_Random_Text(dst, pszMultiByte, 500, (++infoConut) * 45);
 	delete pszMultiByte;
 
 
 	if (idefectsCounts != 0)
 	{
-		Mat logo = cv::imread("judgelog/defective.bmp");
-		Mat mask = cv::imread("judgelog/defective.bmp", 0);
+		cv::Mat logo = cv::imread("judgelog/defective.bmp");
+		cv::Mat mask = cv::imread("judgelog/defective.bmp", 0);
 		cv::Mat imageROI;
 		imageROI = (*dst)(cv::Rect(10, 10, logo.cols, logo.rows));
 		addWeighted(imageROI, 1.0, logo, 2.0, 0, imageROI);
@@ -219,8 +216,8 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 	}
 	else
 	{
-		Mat logo = cv::imread("judgelog/voidofdefects.bmp");
-		Mat mask = cv::imread("judgelog/voidofdefects.bmp", 0);
+		cv::Mat logo = cv::imread("judgelog/voidofdefects.bmp");
+		cv::Mat mask = cv::imread("judgelog/voidofdefects.bmp", 0);
 		cv::Mat imageROI;
 		imageROI = (*dst)(cv::Rect(10, 10, logo.cols, logo.rows));
 		addWeighted(imageROI, 1.0, logo, 2.0, 0, imageROI);
@@ -239,10 +236,10 @@ void SapImageProcessing::thresh_callback(int, void*, Mat *src, Mat *src_gray, Ma
 }
 
 
-void SapImageProcessing::Displaying_Random_Text(Mat *image, char* ShowInfo, int x, int y)
+void SapImageProcessing::Displaying_Random_Text(cv::Mat *image, char* ShowInfo, int x, int y)
 {
 	//int lineType = 8;
-	Point org;
+	cv::Point org;
 	if (y <= image->rows)
 	{
 		org.x = x;
@@ -256,14 +253,14 @@ void SapImageProcessing::Displaying_Random_Text(Mat *image, char* ShowInfo, int 
 	//Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
 	//putText(*image, ShowInfo, org, rng.uniform(0, 8),
 	//	rng.uniform(0, 100)*0.05 + 0.1, color, rng.uniform(1, 10), lineType); //
-	putText(*image, ShowInfo, org, FONT_HERSHEY_PLAIN,
+	putText(*image, ShowInfo, org, cv::FONT_HERSHEY_PLAIN,
 		3, CV_RGB(255, 255, 255), 3);
 
 }
 
 
-Scalar SapImageProcessing::randomColor(RNG& rng)
+cv::Scalar SapImageProcessing::randomColor(cv::RNG& rng)
 {
 	int icolor = (unsigned)rng;
-	return Scalar(icolor & 255, (icolor >> 8) & 255, (icolor >> 16) & 255);
+	return cv::Scalar(icolor & 255, (icolor >> 8) & 255, (icolor >> 16) & 255);
 }

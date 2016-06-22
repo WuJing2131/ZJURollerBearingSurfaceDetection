@@ -11,9 +11,6 @@
 #include <iostream>
 #include <string>
 
-using namespace cv;
-
-using namespace std;
 
 //
 // SapMyProcessing class declaration
@@ -22,19 +19,19 @@ class SapImageProcessing : public SapProcessing
 {
 public:
 	// Constructor/Destructor
-	SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext, Mat *pSrc, Mat *pDst, int Thread);
+	SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext, cv::Mat *pSrc, cv::Mat *pDst, int Thread);
 	virtual ~SapImageProcessing();
-	void Displaying_Random_Text(Mat* image, char* window_name, int x, int y);
-	static Scalar randomColor(RNG& rng);
-	void thresh_callback(int, void*, Mat *src, Mat *src_gray, Mat *dst);
+	void Displaying_Random_Text(cv::Mat* image, char* window_name, int x, int y);
+	static cv::Scalar randomColor(cv::RNG& rng);
+	void thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_gray, cv::Mat *dst);
 
-	int    m_thresh = 40;
+	int    m_nthresh = 40;
 	int    m_max_thresh = 255;
-	RNG    m_rng;
+	cv::RNG    m_rng;
 	double m_alpha = 0.5; 
 	double m_beta;
-	Mat *  m_pImageProcessResult;
-	Mat *  m_pImageProcessComposite;
+	cv::Mat *  m_pImageProcessResult;
+	cv::Mat *  m_pImageProcessComposite;
 
 protected:
 	virtual BOOL Run();

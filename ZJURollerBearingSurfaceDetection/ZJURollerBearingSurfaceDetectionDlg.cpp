@@ -9,11 +9,11 @@
 #include "CommunicationConfigurationDlg.h"
 #include "LibUSBWin32\include\lusb0_usb.h"
 #include "HistogramDlg.h"
-#include "CvvImage.h"
+#include "CvvImage/CvvImage.h"
+#include "CommonMethod.h"
 #include <crtdbg.h>
 #include <iostream>
 #include <string>
-#include "CommonMethod.h"
 
 #define CRTDBG_MAP_ALLOC   //内存泄漏检测
 #ifdef _DEBUG
@@ -21,7 +21,6 @@
 #define new DEBUG_NEW  // 调试模式下new 会被替换为 DEBUG_NEW 可以定位内存泄露
 #endif
 
-using namespace std;
 
 #pragma region USB Parameters Settings
 #define MY_CONFIG 1
@@ -191,9 +190,9 @@ void CZJURollerBearingSurfaceDetectionDlg::XferCallback(SapXferCallbackInfo *pIn
 		if (pDlg->m_nXferCallbackCount < pDlg->m_lImageHeight)
 		{
 			int PositionOfAImageRowCache = 0;
-			for (int ImageFrameCount = 0; ImageFrameCount < pDlg->m_Buffers->GetCount(); ImageFrameCount++)
+			for (int ImageFrameCount = 0; ImageFrameCount < pDlg->m_Buffers->GetCount(); ++ImageFrameCount)
 			{
-				for (int PositionOfAImageRow = PositionOfAImageRowCache*0.99; PositionOfAImageRow < pDlg->m_Buffers->GetWidth(); PositionOfAImageRow++)
+				for (int PositionOfAImageRow = PositionOfAImageRowCache*0.99; PositionOfAImageRow < pDlg->m_Buffers->GetWidth(); ++PositionOfAImageRow)
 				{
 					BYTE ElementDataValue;
 					pDlg->m_Buffers->ReadElement(PositionOfAImageRow, 0, &ElementDataValue);
@@ -207,13 +206,13 @@ void CZJURollerBearingSurfaceDetectionDlg::XferCallback(SapXferCallbackInfo *pIn
 				pDlg->m_ProcessBuffers->CopyRect(pDlg->m_Buffers, ImageFrameCount, PositionOfAImageRowCache, 0, pDlg->m_lImageWidth, 1, ImageFrameCount, 0, pDlg->m_nXferCallbackCount);
 				//pDlg->m_ProcessBuffers->CopyRect(pDlg->m_Buffers, nimageCount, 0, 0, pDlg->m_Buffers->GetWidth(), 1, nimageCount, 0, pDlg->m_countLine);
 			}
-			pDlg->m_nXferCallbackCount++;
+			++(pDlg->m_nXferCallbackCount);
 		}
 		else if (pDlg->m_nXferCallbackCount == pDlg->m_lImageHeight)
 		{
 			//Image Processing.........................
 			// Process current buffer (see Run member function into the SapMyProcessing.cpp file)
-			pDlg->m_nXferCallbackCount++;
+			++(pDlg->m_nXferCallbackCount);
 
 			LOG(TRACE) << " A frame image acquisition is completed! Image processing...";
 			//pDlg->m_ProcessingImage->Init();
@@ -394,8 +393,8 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 		LOG(TRACE) << " SapAcquisition Config Dlalog does not open when the program is initialized! Drive not loaded successfully ... ";
 	}
 
-	m_pImageProcessResult = new  Mat(0, 0, CV_8UC3);
-	m_pImageProcessComposite = new  Mat(0, 0, CV_8UC3);
+	m_pImageProcessResult = new  cv::Mat(0, 0, CV_8UC3);
+	m_pImageProcessComposite = new  cv::Mat(0, 0, CV_8UC3);
 	// Define other objects
 	m_View = new SapView(m_ProcessBuffers, m_viewWnd.GetSafeHwnd(), ViewCallback, this);
 	m_ProcessingImage = new SapImageProcessing(m_ProcessBuffers, ImageProcessedCallback, this,\
@@ -1035,9 +1034,9 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFileLoad()
 			<< "\n					m_Buffers Type: " << m_Buffers->GetType();
 		//m_ProcessBuffers->CopyAll(m_Buffers);   ImageRowPosition
 		int PositionOfAImageRowCache = 0;
-		for (int ImageFrameCount = 0; ImageFrameCount < m_Buffers->GetCount(); ImageFrameCount++)
+		for (int ImageFrameCount = 0; ImageFrameCount < m_Buffers->GetCount(); ++ImageFrameCount)
 		{
-			for (int ImageRowPosition = 0; ImageRowPosition < m_Buffers->GetHeight(); ImageRowPosition++)
+			for (int ImageRowPosition = 0; ImageRowPosition < m_Buffers->GetHeight(); ++ImageRowPosition)
 			{
 
 				//m_ProcessBuffers->CopyRect(m_Buffers, j, 0, i, m_Buffers->GetWidth(), 1, j, 0, i);
@@ -1315,7 +1314,7 @@ UINT ReadReportThread(LPVOID lpParam)
 		//usb_bulk_read(gusb_handle, 0x81, ReadReportBuffer, sizeof(ReadReportBuffer), 100);
 		int ret = usb_interrupt_read(gusb_handle, 0x81, ReadReportBuffer, sizeof(ReadReportBuffer), 0);
 		std::vector<int> vecNum;
-		for (int i = 0; i < ret; i++)
+		for (int i = 0; i < ret; ++i)
 			vecNum.push_back(ReadReportBuffer[i]);
 		el::Loggers::removeFlag(el::LoggingFlag::NewLineForContainer);
 		LOG(TRACE) << " USB Receive:" << vecNum;
@@ -1351,7 +1350,7 @@ LRESULT CZJURollerBearingSurfaceDetectionDlg::OnSerialPortReceiveCommunication(W
 	static int SerialPortCount = 0;
 	static int cmd_state = 0;
 
-	m_lRXCount++;
+	++m_lRXCount;
 
 	if (SerialPortCount == 0 && ch != 0xEE)  //EE 0x XX FF FC FF FF   
 		return 0;
@@ -1389,7 +1388,7 @@ LRESULT CZJURollerBearingSurfaceDetectionDlg::OnSerialPortReceiveCommunication(W
 		}
 
 		std::vector<int> vecNum;
-		for (int i = 0; i < SerialPortCount; i++)
+		for (int i = 0; i < SerialPortCount; ++i)
 			vecNum.push_back(m_pkg[i]);
 		el::Loggers::removeFlag(el::LoggingFlag::NewLineForContainer);
 		LOG(TRACE) << " Serial Port Receive:" << vecNum;
@@ -1432,7 +1431,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnAboutAppShow()
 	dlg.DoModal();
 }
 
-void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWnd(int nID, Mat *mat,CString ImageSavePrefix)
+void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWnd(int nID, cv::Mat *mat,CString ImageSavePrefix)
 {
 
 	SetImageFileSaveSetting(mat, ImageSavePrefix);
@@ -1477,24 +1476,8 @@ void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWnd(int nID, Mat *mat,CSt
 
 
 
-//std::string TCHAR2STRING（TCHAR *STR）
-//
-//{
-//
-//	int iLen = WideCharToMultiByte(CP_ACP, 0,STR, -1, NULL, 0, NULL, NULL);
-//
-//	char* chRtn = new char[iLen * sizeof(char)];
-//
-//	WideCharToMultiByte(CP_ACP, 0, STR, -1, chRtn, iLen, NULL, NULL);
-//
-//	std::string str(chRtn);
-//
-//	return str;
-//
-//}
 
-
-void CZJURollerBearingSurfaceDetectionDlg::SetImageFileSaveSetting(Mat *pmat, CString HeadString)
+void CZJURollerBearingSurfaceDetectionDlg::SetImageFileSaveSetting(cv::Mat *pmat, CString HeadString)
 {
 	m_timeImageSequence = CTime::GetCurrentTime();
 	CString szTime = m_timeImageSequence.Format("%Y-%m-%d_%H-%M-%S.bmp");
@@ -1760,8 +1743,8 @@ void CZJURollerBearingSurfaceDetectionDlg::OnAnalysisHistogram()
 {
 	BYTE *pData;
 	m_Buffers->GetAddress((void **)&pData);
-	Mat HistogramMat(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC1, (void*)pData);
-	Mat HistDst;
+	cv::Mat HistogramMat(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC1, (void*)pData);
+	cv::Mat HistDst;
 	equalizeHist(HistogramMat, HistDst);    //直方图   Debug
 	CHistogramDlg histDlg(&HistDst);
 	histDlg.DoModal();

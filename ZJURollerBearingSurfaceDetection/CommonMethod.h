@@ -1,4 +1,6 @@
-#pragma once
+//#pragma once
+#ifndef COMMONMETHOD_H
+#define  COMMONMETHOD_H
 class CCommonMethod
 {
 public:
@@ -10,4 +12,4 @@ public:
 	static byte DoCheckSum(unsigned char *buffer, int   size);
 	static char* WCharToMByte(LPCWSTR lpSrc);
 };
-
+#endif

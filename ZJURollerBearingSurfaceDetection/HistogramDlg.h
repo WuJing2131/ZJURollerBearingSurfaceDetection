@@ -1,10 +1,9 @@
+#ifndef HISTOGRAMDLG_H
+#define HISTOGRAMDLG_H
 #include <opencv2\opencv.hpp>
-#include "CvvImage.h"
 #include "afxwin.h"
-#pragma once
+#include "CvvImage/CvvImage.h"
 
-using namespace cv;
-using namespace std;
 
 // CHistogramDlg 对话框
 class CHistogramDlg : public CDialogEx
@@ -12,9 +11,9 @@ class CHistogramDlg : public CDialogEx
 	DECLARE_DYNAMIC(CHistogramDlg)
 
 public:
-	CHistogramDlg(Mat *showImage,CWnd* pParent = NULL);   // 标准构造函数
+	CHistogramDlg(cv::Mat *showImage,CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CHistogramDlg();
-	void DrawPicToHDC(Mat *img, CWnd* pWnd);
+	void DrawPicToHDC(cv::Mat *img, CWnd* pWnd);
 
 	
 // 对话框数据
@@ -28,6 +27,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CWnd * HistImageBox;
-	Mat *m_Histogram;
+	cv::Mat *m_Histogram;
 	CStatic m_ImageHistogram;
 };
+
+#endif

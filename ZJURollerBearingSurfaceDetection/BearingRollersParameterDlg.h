@@ -1,4 +1,6 @@
-#pragma once
+//#pragma once
+#ifndef BEARINGROLLERSPARAMETERDLG_H
+#define BEARINGROLLERSPARAMETERDLG_H
 #include "afxwin.h"
 #include "afxcmn.h"
 #include "sqlite\SQLite.h"
@@ -70,3 +72,5 @@ public:
 	TCHAR       sqlCommad[512] = { 0 };
 	
 };
+
+#endif // !BEARINGROLLERSPARAMETERDLG_H

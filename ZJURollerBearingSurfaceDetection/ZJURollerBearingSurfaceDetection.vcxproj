@@ -79,7 +79,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>D:\OpenCV\OpenCV3.1.0\opencv\build\include;D:\OpenCV\OpenCV3.1.0\opencv\build\include\opencv;D:\OpenCV\OpenCV3.1.0\opencv\build\include\opencv2;$(ProjectDir)LibUSBWin32\include;$(ProjectDir)nedmalloc;$(IncludePath)</IncludePath>
+    <IncludePath>D:\OpenCV\OpenCV3.1.0\opencv\build\include;D:\OpenCV\OpenCV3.1.0\opencv\build\include\opencv;D:\OpenCV\OpenCV3.1.0\opencv\build\include\opencv2;$(ProjectDir)LibUSBWin32\include;$(ProjectDir)nedmalloc;$(ProjectDir)CSerialPort;$(ProjectDir)CvvImage;$(ProjectDir)easylogging;$(IncludePath)</IncludePath>
     <LibraryPath>D:\OpenCV\OpenCV3.1.0\opencv\build\x64\vc14\lib;$(ProjectDir)LibUSBWin32\lib\msvc_x64;$(ProjectDir)sqlite;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ProjectDir)LibUSBWin32\bin\amd64;$(ReferencePath)</ReferencePath>
   </PropertyGroup>
@@ -200,12 +200,11 @@
   <ItemGroup>
     <ClInclude Include="BearingRollersParameterDlg.h" />
     <ClInclude Include="CommonMethod.h" />
-    <ClInclude Include="CvvImage.h" />
-    <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="CSerialPort\SerialPort.h" />
+    <ClInclude Include="easylogging\easylogging++.h" />
     <ClInclude Include="HistogramDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SapImageProcessing.h" />
-    <ClInclude Include="SerialPort.h" />
     <ClInclude Include="CommunicationConfigurationDlg.h" />
     <ClInclude Include="sqlite\SQLite.h" />
     <ClInclude Include="sqlite\sqlite3.h" />
@@ -217,10 +216,9 @@
   <ItemGroup>
     <ClCompile Include="BearingRollersParameterDlg.cpp" />
     <ClCompile Include="CommonMethod.cpp" />
-    <ClCompile Include="CvvImage.cpp" />
+    <ClCompile Include="CSerialPort\SerialPort.cpp" />
     <ClCompile Include="HistogramDlg.cpp" />
     <ClCompile Include="SapImageProcessing.cpp" />
-    <ClCompile Include="SerialPort.cpp" />
     <ClCompile Include="CommunicationConfigurationDlg.cpp" />
     <ClCompile Include="sqlite\SQLite.cpp" />
     <ClCompile Include="stdafx.cpp">

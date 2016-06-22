@@ -6,14 +6,15 @@
  * \author WuJing
  * \date 六月 2016
  */
-
-#pragma once
-
+// 
+// #pragma once
+#ifndef ZJUROLLERBEARINGSURFACEDETECTIONDLG_H
+#define ZJUROLLERBEARINGSURFACEDETECTIONDLG_H
 #include "afxwin.h"
 #include "SapClassBasic.h"
 #include "SapClassGui.h"
 #include "SapImageProcessing.h"
-#include "SerialPort.h"
+#include "CSerialPort/SerialPort.h"
 #include <queue>
 
 //#define FLATFIELD    //Flat Field
@@ -72,8 +73,8 @@ public:
 	void SaveSettings();
 
 	void CmdToLowerComputer();    //Sends a command to the next crew procedures
-	void SetImageFileSaveSetting(Mat*mat, CString HeadString);   //图像保存  HeadString==Null 保存采集的原图像
-	void showMatImgToWnd(int nID,Mat *mat, CString ImageSavePrefix);   //将处理后的图像显示在窗口控件上
+	void SetImageFileSaveSetting(cv::Mat*mat, CString HeadString);   //图像保存  HeadString==Null 保存采集的原图像
+	void showMatImgToWnd(int nID, cv::Mat *mat, CString ImageSavePrefix);   //将处理后的图像显示在窗口控件上
 	void DrawPicToHDC(IplImage *img, UINT ID);       //使用CvvImage将Mat绘制到Picture Control
 
 	// Dialog Data
@@ -174,8 +175,8 @@ public:
 	LONG        m_lTXCount = 0;
 	
 	//OpenCV Image Data Structure
-	Mat *  m_pImageProcessResult;   
-	Mat *  m_pImageProcessComposite;
+	cv::Mat *  m_pImageProcessResult;
+	cv::Mat *  m_pImageProcessComposite;
 	CWnd*  m_pWndImageResult;
 	CWnd*  m_pWndImageComposite;
 	void*  m_pData;
@@ -189,3 +190,5 @@ public:
 	int    m_nImagePreprocessingThreshold = 15;
 	
 };
+
+#endif

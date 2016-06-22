@@ -32,10 +32,10 @@ int CCommonMethod::DoStr2Hex(CString str, char* data)
 		char l, h = str[i];
 		if (h == ' ')
 		{
-			i++;
+			++i;
 			continue;
 		}
-		i++;
+		++i;
 		if (i >= len) break;
 		l = str[i];
 		t = DoHexChar(h);
@@ -44,9 +44,9 @@ int CCommonMethod::DoStr2Hex(CString str, char* data)
 			break;
 		else
 			t = t * 16 + t1;
-		i++;
+		++i;
 		data[rlen] = (char)t;
-		rlen++;
+		++rlen;
 	}
 	return rlen;
 }
@@ -64,7 +64,7 @@ BOOL CCommonMethod::WChar2MByte(LPCWSTR lpSrc, LPSTR lpDest, int nlen)
 byte CCommonMethod::DoCheckSum(unsigned char *buffer, int   size)
 {
 	byte myv = 0x00;
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < size; ++i)
 		myv += *buffer++;
 	return myv;
 }
@@ -87,3 +87,4 @@ char *  CCommonMethod::WCharToMByte(LPCWSTR lpSrc)
 		return NULL;
 	}
 }
+

@@ -1,4 +1,6 @@
-#pragma once
+//#pragma once
+#ifndef COMMUNICATIONCONFIGURATIONDLG_H
+#define COMMUNICATIONCONFIGURATIONDLG_H
 #include "afxwin.h"
 
 
@@ -55,3 +57,5 @@ public:
 	BOOL      m_SerialPortEnable;
 	BOOL      m_bUSBEnable;
 };
+
+#endif

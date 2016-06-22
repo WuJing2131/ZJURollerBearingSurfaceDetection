@@ -283,7 +283,7 @@ void CBearingRollersParameterDlg::RefreshListView(SetRefreshStates state)
 		m_wndList.InsertItem(index, Reader.GetStringValue(0));
 		m_wndList.SetItemText(index, 1, Reader.GetStringValue(1));
 		m_wndList.SetItemText(index, 2, Reader.GetStringValue(2));
-		index++;
+		++index;
 		//// 读取图片二进制文件  
 		//const BYTE *ImageBuf = Reader.GetBlobValue(6, len);
 	}

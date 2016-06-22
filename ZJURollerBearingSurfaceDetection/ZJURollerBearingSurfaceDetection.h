@@ -12,7 +12,7 @@
 
 #define ELPP_STL_LOGGING  
 #define ELPP_UNICODE     //使日志库支持unicode 编码
-#include "easylogging++.h"
+#include "easylogging/easylogging++.h"
 
 // CZJURollerBearingSurfaceDetectionApp: 
 // 有关此类的实现，请参阅 ZJURollerBearingSurfaceDetection.cpp

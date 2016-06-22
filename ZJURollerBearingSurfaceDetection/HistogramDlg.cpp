@@ -12,7 +12,7 @@
 
 IMPLEMENT_DYNAMIC(CHistogramDlg, CDialogEx)
 
-CHistogramDlg::CHistogramDlg(Mat *showImage, CWnd* pParent /*=NULL*/)
+CHistogramDlg::CHistogramDlg(cv::Mat *showImage, CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_HISTGRAM, pParent)
 	, m_Histogram(showImage)
 {
@@ -39,7 +39,7 @@ END_MESSAGE_MAP()
 // CHistogramDlg 消息处理程序
 
 
-void CHistogramDlg::DrawPicToHDC(Mat *img, CWnd* pWnd)
+void CHistogramDlg::DrawPicToHDC(cv::Mat *img, CWnd* pWnd)
 {
 	//CWnd* pWnd = GetDlgItem(ID);
 	if (img->empty())
