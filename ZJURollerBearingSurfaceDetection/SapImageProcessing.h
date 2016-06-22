@@ -19,7 +19,8 @@ class SapImageProcessing : public SapProcessing
 {
 public:
 	// Constructor/Destructor
-	SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext, cv::Mat *pSrc, cv::Mat *pDst, int Thread);
+	SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext,\
+		cv::Mat *pSrc, cv::Mat *pDst, int Thread);
 	virtual ~SapImageProcessing();
 	void Displaying_Random_Text(cv::Mat* image, char* window_name, int x, int y);
 	static cv::Scalar randomColor(cv::RNG& rng);
@@ -27,9 +28,10 @@ public:
 
 	int    m_nthresh = 40;
 	int    m_max_thresh = 255;
-	cv::RNG    m_rng;
 	double m_alpha = 0.5; 
 	double m_beta;
+
+	cv::RNG    m_rng;
 	cv::Mat *  m_pImageProcessResult;
 	cv::Mat *  m_pImageProcessComposite;
 

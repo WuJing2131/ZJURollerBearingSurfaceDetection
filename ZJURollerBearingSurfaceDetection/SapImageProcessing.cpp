@@ -9,7 +9,8 @@
 //
 // Constructor/Destructor
 //
-SapImageProcessing::SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext, cv::Mat *pSrc, cv::Mat *pDst, int Thread)
+SapImageProcessing::SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback,\
+	void *pContext, cv::Mat *pSrc, cv::Mat *pDst, int Thread)
 	: SapProcessing(pBuffers, pCallback, pContext)
 {
 	m_ProcessBuffers = pBuffers;
@@ -25,10 +26,7 @@ SapImageProcessing::~SapImageProcessing()
 		Destroy();
 }
 
-
-//
-// Processing Control
-//
+//Processing Control
 BOOL SapImageProcessing::Run()
 {
 	BYTE *pData;
@@ -204,7 +202,6 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 	Displaying_Random_Text(dst, pszMultiByte, 500, (++infoConut) * 45);
 	delete pszMultiByte;
 
-
 	if (idefectsCounts != 0)
 	{
 		cv::Mat logo = cv::imread("judgelog/defective.bmp");
@@ -221,20 +218,10 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 		cv::Mat imageROI;
 		imageROI = (*dst)(cv::Rect(10, 10, logo.cols, logo.rows));
 		addWeighted(imageROI, 1.0, logo, 2.0, 0, imageROI);
-
 		//cvAddText();
 		//Beep(0x0fff, 100);
 	}
-
-	/*Beep(0x0fff, 20);
-	Sleep(1000);
-	Beep(0x0fff, 10);
-	Sleep(1000);
-	Beep(0x0fff, 50);
-	Sleep(1000);*/
-
 }
-
 
 void SapImageProcessing::Displaying_Random_Text(cv::Mat *image, char* ShowInfo, int x, int y)
 {
@@ -252,12 +239,10 @@ void SapImageProcessing::Displaying_Random_Text(cv::Mat *image, char* ShowInfo, 
 	}
 	//Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
 	//putText(*image, ShowInfo, org, rng.uniform(0, 8),
-	//	rng.uniform(0, 100)*0.05 + 0.1, color, rng.uniform(1, 10), lineType); //
-	putText(*image, ShowInfo, org, cv::FONT_HERSHEY_PLAIN,
+	//	rng.uniform(0, 100)*0.05 + 0.1, color, rng.uniform(1, 10), lineType);
+	putText(*image, ShowInfo, org, cv::FONT_HERSHEY_PLAIN,\
 		3, CV_RGB(255, 255, 255), 3);
-
 }
-
 
 cv::Scalar SapImageProcessing::randomColor(cv::RNG& rng)
 {

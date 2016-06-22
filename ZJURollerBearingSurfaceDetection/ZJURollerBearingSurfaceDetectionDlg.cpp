@@ -21,7 +21,6 @@
 #define new DEBUG_NEW  // 调试模式下new 会被替换为 DEBUG_NEW 可以定位内存泄露
 #endif
 
-
 #pragma region USB Parameters Settings
 #define MY_CONFIG 1
 #define MY_INTF 0
@@ -332,11 +331,11 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 	CRect rect;
 	GetClientRect(&rect);
 
-	m_wndStatusBar.SetPaneInfo(StatusBarPosition::SEPARATOR, ID_SEPARATOR, SBPS_STRETCH, 60);
-	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_TX, ID_STATUSBAR_TX, SBPS_NORMAL, 60);
-	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_RX, ID_STATUSBAR_RX, SBPS_NORMAL, 60);
-	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_COMM, ID_STATUSBAR_COMM, SBPS_NORMAL, 150);
-	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_SENDKEY, ID_STATUSBAR_SENDKEY, SBPS_NORMAL, 60);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::SEPARATOR,         ID_SEPARATOR,          SBPS_STRETCH, 60);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_TX,      ID_STATUSBAR_TX,       SBPS_NORMAL,  60);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_RX,      ID_STATUSBAR_RX,       SBPS_NORMAL,  60);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_COMM,    ID_STATUSBAR_COMM,     SBPS_NORMAL, 150);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_SENDKEY, ID_STATUSBAR_SENDKEY,  SBPS_NORMAL,  60);
 	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUPIXELPOSTION, IDS_STATUPIXELPOSTION, SBPS_NORMAL, 165);
 
 	m_Menu.LoadMenu(IDR_MENU);
@@ -354,16 +353,14 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 	RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, 0);
 
 	//CRect rect;
-
 	//GetClientRect(rect);
-
 	//if (!m_wndStatusBar.Create(this) || !m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT)))
 	//{
 	//	TRACE0("Can't create status bar\n");
 	//	return false;
 	//}
-
 	//m_wndStatusBar.MoveWindow(0, rect.bottom - 20, rect.right, 20);// 调整状态栏的位置和大小
+
 	// Initialize variables
 	GetWindowText(m_appTitle);
 
@@ -397,11 +394,8 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 	m_pImageProcessComposite = new  cv::Mat(0, 0, CV_8UC3);
 	// Define other objects
 	m_View = new SapView(m_ProcessBuffers, m_viewWnd.GetSafeHwnd(), ViewCallback, this);
-	m_ProcessingImage = new SapImageProcessing(m_ProcessBuffers, ImageProcessedCallback, this,\
-		m_pImageProcessResult, m_pImageProcessComposite, m_nMImageProcessingPrecision);         //m_nImageProcessingPrecision
-
-
-
+	m_ProcessingImage = new SapImageProcessing(m_ProcessBuffers, ImageProcessedCallback, this, \
+		m_pImageProcessResult, m_pImageProcessComposite, m_nMImageProcessingPrecision);  
 
 	// Create all objects
 	if (!CreateObjects()) { EndDialog(TRUE); return FALSE; }
@@ -458,11 +452,11 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 			return FALSE;
 		}
 		LOG(TRACE)\
-			<< "\n					m_Buffers Count: " << m_Buffers->GetCount()\
+			<< "\n					m_Buffers Count: "      << m_Buffers->GetCount()\
 			<< "\n					m_Buffers GFrameRate: " << m_Buffers->GetFrameRate()\
-			<< "\n					m_Buffers Height: " << m_Buffers->GetHeight()\
-			<< "\n					m_Buffers Width: " << m_Buffers->GetWidth()\
-			<< "\n					m_Buffers Type: " << m_Buffers->GetType();
+			<< "\n					m_Buffers Height: "     << m_Buffers->GetHeight()\
+			<< "\n					m_Buffers Width: "      << m_Buffers->GetWidth()\
+			<< "\n					m_Buffers Type: "       << m_Buffers->GetType();
 		// Clear all buffers
 		m_Buffers->Clear();
 	}
@@ -481,11 +475,12 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 		m_ProcessBuffers->SetLocation(m_Buffers->GetLocation());
 		m_ProcessBuffers->SetCount(m_Buffers->GetCount());
 		LOG(TRACE)\
-			<< "\n					m_ProcessBuffers Count: " << m_ProcessBuffers->GetCount()\
+			<< "\n					m_ProcessBuffers Count: "      << m_ProcessBuffers->GetCount()\
 			<< "\n					m_ProcessBuffers GFrameRate: " << m_ProcessBuffers->GetFrameRate()\
-			<< "\n					m_ProcessBuffers Height: " << m_ProcessBuffers->GetHeight()\
-			<< "\n					m_ProcessBuffers Width: " << m_ProcessBuffers->GetWidth()\
-			<< "\n					m_ProcessBuffers  Type: " << m_ProcessBuffers->GetType();
+			<< "\n					m_ProcessBuffers Height: "     << m_ProcessBuffers->GetHeight()\
+			<< "\n					m_ProcessBuffers Width: "      << m_ProcessBuffers->GetWidth()\
+			<< "\n					m_ProcessBuffers  Type: "      << m_ProcessBuffers->GetType();
+
 		LOG(TRACE)\
 			<< "\n		*************************************************************************************\n"\
 			<< "		TypeDefault               = -1" << "   TypeVirtual   = 0" << "   TypeContiguous            =  1\n"\
@@ -493,7 +488,7 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 			<< "		TypeOverlay               =  6" << "   TypeDummy     =64" << "   TypePhysical              =128\n"\
 			<< "		TypeScatterGatherPhysical =160" << "   TypeUnmapped =512" << "   TypeScatterGatherUnmapped =544\n"\
 			<< "		*************************************************************************************";
-		//np =m_Buffers->GetLocation();
+
 		//m_ProcessBuffers->SetLocation(m_Buffers->GetLocation());
 		if (!m_ProcessBuffers->Create())
 		{
@@ -630,6 +625,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnPaint()
 		// Center icon in client rectangle
 		INT32 cxIcon = GetSystemMetrics(SM_CXICON);
 		INT32 cyIcon = GetSystemMetrics(SM_CYICON);
+
 		CRect rect;
 		GetClientRect(&rect);
 		INT32 x = (rect.Width() - cxIcon + 1) / 2;
@@ -660,22 +656,22 @@ void CZJURollerBearingSurfaceDetectionDlg::OnDestroy()
 	DestroyObjects();
 
 	// Delete all objects
-	if (m_Xfer)			delete m_Xfer;
+	if (m_Xfer)			             delete m_Xfer;
 	if (m_ProcessingImage)			 delete m_ProcessingImage;
-	if (m_ImageWnd)	delete m_ImageWnd;
-	if (m_View)			delete m_View;
-	if (m_FlatField)  delete m_FlatField;
-	if (m_Buffers)		delete m_Buffers;
-	if (m_ProcessBuffers) delete m_ProcessBuffers;
-	if (m_Acq)			delete m_Acq;
-	if (m_pData) delete m_pData;
-	if (m_Gio) delete m_Gio;
-	if (m_Lut) delete m_Lut;
-	if (m_Performance) delete m_Performance;
-	if (m_pImageProcessResult) delete m_pImageProcessResult;
-	if (m_pImageProcessComposite) delete m_pImageProcessComposite;
-	if (m_pWndImageResult) delete m_pWndImageResult;
-	if (m_pWndImageComposite) delete m_pWndImageComposite;
+	if (m_ImageWnd)	                 delete m_ImageWnd;
+	if (m_View)			             delete m_View;
+	if (m_FlatField)                 delete m_FlatField;
+	if (m_Buffers)		             delete m_Buffers;
+	if (m_ProcessBuffers)            delete m_ProcessBuffers;
+	if (m_Acq)			             delete m_Acq;
+	if (m_pData)                     delete m_pData;
+	if (m_Gio)                       delete m_Gio;
+	if (m_Lut)                       delete m_Lut;
+	if (m_Performance)               delete m_Performance;
+	if (m_pImageProcessResult)       delete m_pImageProcessResult;
+	if (m_pImageProcessComposite)    delete m_pImageProcessComposite;
+	if (m_pWndImageResult)           delete m_pWndImageResult;
+	if (m_pWndImageComposite)        delete m_pWndImageComposite;
 	LOG(TRACE) << " Roller Bearing Surface Detection Program Over ...";
 	_CrtDumpMemoryLeaks();  //检测内存泄漏
 
@@ -1169,7 +1165,6 @@ void CZJURollerBearingSurfaceDetectionDlg::OnCommunicationSettings()  //
 						<< "\n					Serial Port Stop Bits " << m_intStopBits
 						<< "\n					Serial Port Date Bits " << m_intDataBits
 						<< "\n					Connected ... ";
-
 				}
 				else
 				{
@@ -1406,7 +1401,7 @@ LRESULT CZJURollerBearingSurfaceDetectionDlg::OnSerialPortReceiveCommunication(W
 
 void CZJURollerBearingSurfaceDetectionDlg::OnBearingrollerTest()
 {
-	// TODO: 在此添加命令处理程序代码
+	
 	/*//CSerialPort Test
 	BYTE kk[9] = { 12 ,22 ,23 ,67,1,11,22,45,89 };
 	m_serialPort.WriteToPort(kk, 9);
@@ -1420,13 +1415,10 @@ void CZJURollerBearingSurfaceDetectionDlg::OnBearingrollerTest()
 		len = DoStr2Hex(szSend, data);
 		usb_bulk_write(gusb_handle, EP_OUT, data, len, 100);
 	*/
-
-
 }
 
 void CZJURollerBearingSurfaceDetectionDlg::OnAboutAppShow()
 {
-	// TODO: 在此添加命令处理程序代码
 	CAboutDlg dlg;
 	dlg.DoModal();
 }
