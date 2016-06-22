@@ -18,14 +18,17 @@
 
 //#define FLATFIELD    //Flat Field
 
-#define PKG_SIZE 7
 
-#define SEPARATOR 0
-#define STATUSBAR_TX 1
-#define STATUSBAR_RX 2
-#define STATUSBAR_COMM 3
-#define STATUSBAR_SENDKEY 4
-#define STATUPIXELPOSTION 5
+#define PKG_SIZE 7   //host computer Commad Length
+
+enum StatusBarPosition {
+	SEPARATOR,
+	STATUSBAR_TX,
+	STATUSBAR_RX,
+	STATUSBAR_COMM,
+	STATUSBAR_SENDKEY,
+	STATUPIXELPOSTION
+};
 
 //USB reader threads (global) function
 UINT ReadReportThread(LPVOID lpParam);
@@ -69,16 +72,8 @@ public:
 	void SaveSettings();
 
 	void CmdToLowerComputer();    //Sends a command to the next crew procedures
-	void showMatImgToWndResult();  //Image display processing after
-	void showMatImgToWndComposite();  //The original image in the processed image superposition
 	void SetImageFileSaveSetting(Mat*mat, CString HeadString);   //图像保存  HeadString==Null 保存采集的原图像
-
-	//Common processing function (character conversion)
-	int  DoStr2Hex(CString str, char* data);
-	char DoHexChar(char c);
-	BOOL WChar2MByte(LPCWSTR lpSrc, LPSTR lpDest, int nlen);
-	byte DoCheckSum(unsigned char *buffer, int   size);
-	BOOL WCharToMByte(LPCWSTR lpSrc, char *  lpDest);
+	void showMatImgToWnd(int nID,Mat *mat, CString ImageSavePrefix);   //将处理后的图像显示在窗口控件上
 	void DrawPicToHDC(IplImage *img, UINT ID);       //使用CvvImage将Mat绘制到Picture Control
 
 	// Dialog Data
@@ -179,15 +174,15 @@ public:
 	LONG        m_lTXCount = 0;
 	
 	//OpenCV Image Data Structure
-	Mat *  m_pSrc;   
-	Mat *  m_pDst;
+	Mat *  m_pImageProcessResult;   
+	Mat *  m_pImageProcessComposite;
 	CWnd*  m_pWndImageResult;
 	CWnd*  m_pWndImageComposite;
-
 	void*  m_pData;
-	int*   m_numRead;
-	int    m_countLine;
+	int    m_nXferCallbackCount;
+
 	//BOOL m_IsProBufFinshed;
+	LONG  m_lCameraSamplingWeith=8192;
 	LONG   m_lImageWidth = 2495;
 	LONG   m_lImageHeight;
 	int    m_nMImageProcessingPrecision = 99;  

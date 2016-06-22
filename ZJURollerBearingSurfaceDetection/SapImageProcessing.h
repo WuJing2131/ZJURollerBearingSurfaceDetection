@@ -33,8 +33,8 @@ public:
 	RNG    m_rng;
 	double m_alpha = 0.5; 
 	double m_beta;
-	Mat *  m_Src; 
-	Mat *  m_Dst;
+	Mat *  m_pImageProcessResult;
+	Mat *  m_pImageProcessComposite;
 
 protected:
 	virtual BOOL Run();

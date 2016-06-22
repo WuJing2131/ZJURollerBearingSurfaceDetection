@@ -14,8 +14,8 @@ SapImageProcessing::SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCall
 {
 	m_ProcessBuffers = pBuffers;
 	// m_ColorConv = pColorConv;
-	m_Src = pSrc;
-	m_Dst = pDst;
+	m_pImageProcessResult = pSrc;
+	m_pImageProcessComposite = pDst;
 	m_thresh = Thread;
 }
 
@@ -56,8 +56,8 @@ BOOL SapImageProcessing::Run()
 	//m_Src->create(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC3);
 	//cvtColor(src_gray, *m_Src, COLOR_GRAY2BGR);
 
-	*m_Src = src_gray.clone();
-	cvtColor(*m_Src, *m_Src, COLOR_GRAY2BGR);
+	*m_pImageProcessResult = src_gray.clone();
+	cvtColor(*m_pImageProcessResult, *m_pImageProcessResult, COLOR_GRAY2BGR);
 
 
 	//Mat dst; GaussianBlur
@@ -66,7 +66,7 @@ BOOL SapImageProcessing::Run()
 	//medianBlur(src_gray, src_gray, 3);
 	//bilateralFilter(src_gray, src_gray, 5, 10, 2);
 
-	thresh_callback(0, 0, m_Src, &src_gray, m_Dst);
+	thresh_callback(0, 0, m_pImageProcessResult, &src_gray, m_pImageProcessComposite);
 	// Mat(int rows, int cols, int type, void* data, size_t step=AUTO_STEP);
 	//DIP with pBuffers;
    /*if (m_ColorConv->IsSoftwareEnabled())

@@ -199,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BearingRollersParameterDlg.h" />
+    <ClInclude Include="CommonMethod.h" />
     <ClInclude Include="CvvImage.h" />
     <ClInclude Include="easylogging++.h" />
     <ClInclude Include="HistogramDlg.h" />
@@ -215,6 +216,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BearingRollersParameterDlg.cpp" />
+    <ClCompile Include="CommonMethod.cpp" />
     <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="HistogramDlg.cpp" />
     <ClCompile Include="SapImageProcessing.cpp" />

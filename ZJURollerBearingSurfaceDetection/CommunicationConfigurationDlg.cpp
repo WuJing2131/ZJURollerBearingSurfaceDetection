@@ -37,15 +37,15 @@ void CCommunicationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_CBString(pDX, IDC_DATABITS, m_intDataBits);
 	DDX_CBString(pDX, IDC_PARITY, m_cParity);
 	DDX_CBString(pDX, IDC_STOPBITS, m_intStopBits);
-	DDX_Control(pDX, IDC_PORT, m_CtrPort);
-	DDX_Control(pDX, IDC_BAUDBATE, m_CtrBaudRate);
-	DDX_Control(pDX, IDC_DATABITS, m_CtrDataBits);
-	DDX_Control(pDX, IDC_PARITY, m_CtrParity);
-	DDX_Control(pDX, IDC_STOPBITS, m_CtrStopBits);
-	DDX_Control(pDX, IDC_ENABLESERIALPORTCOMMUNICATION, m_EnableSerialPortCommunication);
-	DDX_Check(pDX, IDC_ENABLESERIALPORTCOMMUNICATION, m_SerialPortEnable);
-	DDX_Text(pDX, IDC_USBVID, m_szUSBVID);
-	DDX_Text(pDX, IDC_USBPID, m_szUSBPID);
+	DDX_Control (pDX, IDC_PORT, m_CtrPort);
+	DDX_Control (pDX, IDC_BAUDBATE, m_CtrBaudRate);
+	DDX_Control (pDX, IDC_DATABITS, m_CtrDataBits);
+	DDX_Control (pDX, IDC_PARITY, m_CtrParity);
+	DDX_Control (pDX, IDC_STOPBITS, m_CtrStopBits);
+	DDX_Control (pDX, IDC_ENABLESERIALPORTCOMMUNICATION, m_EnableSerialPortCommunication);
+	DDX_Check   (pDX, IDC_ENABLESERIALPORTCOMMUNICATION, m_SerialPortEnable);
+	DDX_Text    (pDX, IDC_USBVID, m_szUSBVID);
+	DDX_Text    (pDX, IDC_USBPID, m_szUSBPID);
 }
 
 
@@ -97,7 +97,6 @@ BOOL CCommunicationConfigurationDlg::OnInitDialog()
 	m_CtrParity.AddString(_T("EVEN"));
 	m_CtrParity.AddString(_T("MASK"));
 	m_CtrParity.AddString(_T("SPACE"));
-
 	m_CtrStopBits.AddString(_T("0"));
 	m_CtrStopBits.AddString(_T("1"));
 	m_CtrStopBits.AddString(_T("1.5"));

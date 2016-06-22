@@ -13,6 +13,7 @@
 #include <crtdbg.h>
 #include <iostream>
 #include <string>
+#include "CommonMethod.h"
 
 #define CRTDBG_MAP_ALLOC   //内存泄漏检测
 #ifdef _DEBUG
@@ -97,12 +98,10 @@ CZJURollerBearingSurfaceDetectionDlg::CZJURollerBearingSurfaceDetectionDlg(CWnd*
 	m_ProcessingImage = NULL;
 	m_Performance = NULL;
 	m_IsSignalDetected = TRUE;
-	
 	m_pData = NULL;
-	m_numRead = NULL;
-	m_countLine = 0;
-	m_pSrc = NULL;
-	m_pDst = NULL;
+	m_nXferCallbackCount = 0;
+	m_pImageProcessResult = NULL;
+	m_pImageProcessComposite = NULL;
 	m_lImageHeight = 650;     //默认采集640行
 	//	m_IsProBufFinshed = FALSE;
 #ifdef FLATFIELD
@@ -189,32 +188,32 @@ void CZJURollerBearingSurfaceDetectionDlg::XferCallback(SapXferCallbackInfo *pIn
 	else
 	{
 		//TRACE0("\nm_countLine    **************************%d\n", pDlg->m_countLine);
-		if (pDlg->m_countLine < pDlg->m_lImageHeight)
+		if (pDlg->m_nXferCallbackCount < pDlg->m_lImageHeight)
 		{
-			for (int nimageCount = 0; nimageCount < pDlg->m_Buffers->GetCount(); nimageCount++)
+			int PositionOfAImageRowCache = 0;
+			for (int ImageFrameCount = 0; ImageFrameCount < pDlg->m_Buffers->GetCount(); ImageFrameCount++)
 			{
-				int count = 0;
-				for (int k = 0; k < pDlg->m_Buffers->GetWidth(); k++)
+				for (int PositionOfAImageRow = PositionOfAImageRowCache*0.99; PositionOfAImageRow < pDlg->m_Buffers->GetWidth(); PositionOfAImageRow++)
 				{
-					BYTE data;
-					pDlg->m_Buffers->ReadElement(k, 0, &data);
-					if (data > pDlg->m_nImagePreprocessingThreshold)
+					BYTE ElementDataValue;
+					pDlg->m_Buffers->ReadElement(PositionOfAImageRow, 0, &ElementDataValue);
+					if (ElementDataValue > pDlg->m_nImagePreprocessingThreshold)
 					{
-						count = k;
+						PositionOfAImageRowCache = PositionOfAImageRow;
 						break;
 					}
 				}
 
-				pDlg->m_ProcessBuffers->CopyRect(pDlg->m_Buffers, nimageCount, count, 0, pDlg->m_lImageWidth, 1, nimageCount, 0, pDlg->m_countLine);
+				pDlg->m_ProcessBuffers->CopyRect(pDlg->m_Buffers, ImageFrameCount, PositionOfAImageRowCache, 0, pDlg->m_lImageWidth, 1, ImageFrameCount, 0, pDlg->m_nXferCallbackCount);
 				//pDlg->m_ProcessBuffers->CopyRect(pDlg->m_Buffers, nimageCount, 0, 0, pDlg->m_Buffers->GetWidth(), 1, nimageCount, 0, pDlg->m_countLine);
 			}
-			pDlg->m_countLine++;
+			pDlg->m_nXferCallbackCount++;
 		}
-		else if (pDlg->m_countLine == pDlg->m_lImageHeight)
+		else if (pDlg->m_nXferCallbackCount == pDlg->m_lImageHeight)
 		{
 			//Image Processing.........................
 			// Process current buffer (see Run member function into the SapMyProcessing.cpp file)
-			pDlg->m_countLine++;
+			pDlg->m_nXferCallbackCount++;
 
 			LOG(TRACE) << " A frame image acquisition is completed! Image processing...";
 			//pDlg->m_ProcessingImage->Init();
@@ -247,9 +246,10 @@ void CZJURollerBearingSurfaceDetectionDlg::ImageProcessedCallback(SapProCallback
 	//	pDlg->UpdateTitleBar();
 	pDlg->SetImageFileSaveSetting(NULL, _T("SapBuffer"));
 
-	pDlg->showMatImgToWndResult();
-	pDlg->showMatImgToWndComposite();
-	//pDlg->showMatImgToWnd(pDlg->m_pWndImageComposite, pDlg->m_pDst);
+	pDlg->showMatImgToWnd(IDC_IMAGERESULT, pDlg->m_pImageProcessResult, _T("Result"));
+	pDlg->showMatImgToWnd(IDC_IMAGECOMPOSITE, pDlg->m_pImageProcessComposite, _T("Composite"));
+
+	//pDlg->showMatImgToWnd(pDlg->m_pWndImageComposite, pDlg->m_pDst); 
 	/*if (pDlg->m_bSaveImageEnable)
 	{
 		pDlg->m_ProcessBuffers->Save(CStringA(pDlg->m_szSavePath), "-format bmp");
@@ -326,20 +326,19 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 		!m_wndStatusBar.SetIndicators(indicators,
 			sizeof(indicators) / sizeof(UINT)))
 	{
-		//TRACE0("Failed to create status bar\n");
+		LOG(TRACE) << "Failed to create status bar";
 		return -1;      // fail to create
 	}
 
 	CRect rect;
 	GetClientRect(&rect);
 
-	m_wndStatusBar.SetPaneInfo(SEPARATOR, ID_SEPARATOR, SBPS_STRETCH, 60);
-	m_wndStatusBar.SetPaneInfo(STATUSBAR_TX, ID_STATUSBAR_TX, SBPS_NORMAL, 60);
-	m_wndStatusBar.SetPaneInfo(STATUSBAR_RX, ID_STATUSBAR_RX, SBPS_NORMAL, 60);
-	m_wndStatusBar.SetPaneInfo(STATUSBAR_COMM, ID_STATUSBAR_COMM, SBPS_NORMAL, 150);
-	m_wndStatusBar.SetPaneInfo(STATUSBAR_SENDKEY, ID_STATUSBAR_SENDKEY, SBPS_NORMAL, 60);
-	m_wndStatusBar.SetPaneInfo(STATUPIXELPOSTION, IDS_STATUPIXELPOSTION, SBPS_NORMAL, 165);
-	//m_wndStatusBar.SetPaneText(4, _T("hello"), TRUE);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::SEPARATOR, ID_SEPARATOR, SBPS_STRETCH, 60);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_TX, ID_STATUSBAR_TX, SBPS_NORMAL, 60);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_RX, ID_STATUSBAR_RX, SBPS_NORMAL, 60);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_COMM, ID_STATUSBAR_COMM, SBPS_NORMAL, 150);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUSBAR_SENDKEY, ID_STATUSBAR_SENDKEY, SBPS_NORMAL, 60);
+	m_wndStatusBar.SetPaneInfo(StatusBarPosition::STATUPIXELPOSTION, IDS_STATUPIXELPOSTION, SBPS_NORMAL, 165);
 
 	m_Menu.LoadMenu(IDR_MENU);
 	SetMenu(&m_Menu);
@@ -348,6 +347,7 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
 		!m_AcqConwndToolBar.LoadToolBar(IDR_ACQ_CON_TOOLBAR))
 	{
+		LOG(TRACE) << "Failed   to   Create   Dialog   Toolbar";
 		//TRACE0("Failed   to   Create   Dialog   Toolbar/n");
 		EndDialog(IDCANCEL);
 	}
@@ -388,26 +388,24 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 	{
 		// Define off-line objects
 		m_Buffers = new SapBuffer();
-		m_Buffers->SetWidth(8192);     //#####################
-		m_Buffers->SetHeight(650);    //#####################
+		m_Buffers->SetWidth(m_lCameraSamplingWeith);     //#####################
+		m_Buffers->SetHeight(m_lImageHeight);    //#####################
 		m_ProcessBuffers = new SapBuffer();
 		LOG(TRACE) << " SapAcquisition Config Dlalog does not open when the program is initialized! Drive not loaded successfully ... ";
 	}
 
-	m_pSrc = new  Mat(0, 0, CV_8UC3);
-	m_pDst = new  Mat(0, 0, CV_8UC3);
+	m_pImageProcessResult = new  Mat(0, 0, CV_8UC3);
+	m_pImageProcessComposite = new  Mat(0, 0, CV_8UC3);
 	// Define other objects
 	m_View = new SapView(m_ProcessBuffers, m_viewWnd.GetSafeHwnd(), ViewCallback, this);
-	m_ProcessingImage = new SapImageProcessing(m_ProcessBuffers, ImageProcessedCallback, this,
-		m_pSrc, m_pDst, m_nMImageProcessingPrecision);         //m_nImageProcessingPrecision
+	m_ProcessingImage = new SapImageProcessing(m_ProcessBuffers, ImageProcessedCallback, this,\
+		m_pImageProcessResult, m_pImageProcessComposite, m_nMImageProcessingPrecision);         //m_nImageProcessingPrecision
 
 
 
 
 	// Create all objects
 	if (!CreateObjects()) { EndDialog(TRUE); return FALSE; }
-
-
 
 	// Create processing object
 	/*if (m_ProcessingImage && !*m_ProcessingImage)
@@ -460,10 +458,11 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 			DestroyObjects();
 			return FALSE;
 		}
-		LOG(TRACE) << "\n					m_Buffers Count: " << m_Buffers->GetCount()
-			<< "\n					m_Buffers GFrameRate: " << m_Buffers->GetFrameRate()
-			<< "\n					m_Buffers Height: " << m_Buffers->GetHeight()
-			<< "\n					m_Buffers Width: " << m_Buffers->GetWidth()
+		LOG(TRACE)\
+			<< "\n					m_Buffers Count: " << m_Buffers->GetCount()\
+			<< "\n					m_Buffers GFrameRate: " << m_Buffers->GetFrameRate()\
+			<< "\n					m_Buffers Height: " << m_Buffers->GetHeight()\
+			<< "\n					m_Buffers Width: " << m_Buffers->GetWidth()\
 			<< "\n					m_Buffers Type: " << m_Buffers->GetType();
 		// Clear all buffers
 		m_Buffers->Clear();
@@ -474,28 +473,26 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 	// Create m_ProcessBuffers object
 	if (m_ProcessBuffers && !*m_ProcessBuffers)
 	{
-		int np = 0;
 		//m_ProcessBuffers = new SapBuffer(2, m_Buffers->GetWidth(), m_lImageHeight, m_Buffers->GetFormat(), m_Buffers->GetType(), m_Buffers->GetLocation());
 		//m_ProcessBuffers->SetWidth(m_Buffers->GetWidth());
 		m_ProcessBuffers->SetWidth(m_lImageWidth);
 		m_ProcessBuffers->SetHeight(m_lImageHeight);
-		np = m_Buffers->GetFormat();
 		m_ProcessBuffers->SetFormat(m_Buffers->GetFormat());
 		m_ProcessBuffers->SetType(m_Buffers->GetType());
 		m_ProcessBuffers->SetLocation(m_Buffers->GetLocation());
 		m_ProcessBuffers->SetCount(m_Buffers->GetCount());
-		LOG(TRACE)
-			<< "\n					m_ProcessBuffers Count: " << m_ProcessBuffers->GetCount()
-			<< "\n					m_ProcessBuffers GFrameRate: " << m_ProcessBuffers->GetFrameRate()
-			<< "\n					m_ProcessBuffers Height: " << m_ProcessBuffers->GetHeight()
-			<< "\n					m_ProcessBuffers Width: " << m_ProcessBuffers->GetWidth()
+		LOG(TRACE)\
+			<< "\n					m_ProcessBuffers Count: " << m_ProcessBuffers->GetCount()\
+			<< "\n					m_ProcessBuffers GFrameRate: " << m_ProcessBuffers->GetFrameRate()\
+			<< "\n					m_ProcessBuffers Height: " << m_ProcessBuffers->GetHeight()\
+			<< "\n					m_ProcessBuffers Width: " << m_ProcessBuffers->GetWidth()\
 			<< "\n					m_ProcessBuffers  Type: " << m_ProcessBuffers->GetType();
-		LOG(TRACE)
-			<< "\n		*************************************************************************************\n"
-			<< "		TypeDefault               = -1" << "   TypeVirtual   = 0" << "   TypeContiguous            =  1\n"
-			<< "		TypeScatterGather         = 32" << "   TypeOffscreen = 8" << "   TypeOffscreenVideo        = 10\n"
-			<< "		TypeOverlay               =  6" << "   TypeDummy     =64" << "   TypePhysical              =128\n"
-			<< "		TypeScatterGatherPhysical =160" << "   TypeUnmapped =512" << "   TypeScatterGatherUnmapped =544\n"
+		LOG(TRACE)\
+			<< "\n		*************************************************************************************\n"\
+			<< "		TypeDefault               = -1" << "   TypeVirtual   = 0" << "   TypeContiguous            =  1\n"\
+			<< "		TypeScatterGather         = 32" << "   TypeOffscreen = 8" << "   TypeOffscreenVideo        = 10\n"\
+			<< "		TypeOverlay               =  6" << "   TypeDummy     =64" << "   TypePhysical              =128\n"\
+			<< "		TypeScatterGatherPhysical =160" << "   TypeUnmapped =512" << "   TypeScatterGatherUnmapped =544\n"\
 			<< "		*************************************************************************************";
 		//np =m_Buffers->GetLocation();
 		//m_ProcessBuffers->SetLocation(m_Buffers->GetLocation());
@@ -673,12 +670,11 @@ void CZJURollerBearingSurfaceDetectionDlg::OnDestroy()
 	if (m_ProcessBuffers) delete m_ProcessBuffers;
 	if (m_Acq)			delete m_Acq;
 	if (m_pData) delete m_pData;
-	if (m_numRead) delete m_numRead;
 	if (m_Gio) delete m_Gio;
 	if (m_Lut) delete m_Lut;
 	if (m_Performance) delete m_Performance;
-	if (m_pSrc) delete m_pSrc;
-	if (m_pDst) delete m_pDst;
+	if (m_pImageProcessResult) delete m_pImageProcessResult;
+	if (m_pImageProcessComposite) delete m_pImageProcessComposite;
 	if (m_pWndImageResult) delete m_pWndImageResult;
 	if (m_pWndImageComposite) delete m_pWndImageComposite;
 	LOG(TRACE) << " Roller Bearing Surface Detection Program Over ...";
@@ -1028,35 +1024,35 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFileNew()
 void CZJURollerBearingSurfaceDetectionDlg::OnFileLoad()
 {
 	LOG(TRACE) << " File Load Options Setting ...";
-	int count = 0;
 	CLoadSaveDlg dlg(this, m_Buffers, TRUE);
 	if (dlg.DoModal() == IDOK)
 	{
-		LOG(TRACE)
-			<< "\n					m_Buffers Count: " << m_Buffers->GetCount()
-			<< "\n					m_Buffers GFrameRate: " << m_Buffers->GetFrameRate()
-			<< "\n					m_Buffers Height: " << m_Buffers->GetHeight()
-			<< "\n					m_Buffers Width: " << m_Buffers->GetWidth()
+		LOG(TRACE)\
+			<< "\n					m_Buffers Count: " << m_Buffers->GetCount()\
+			<< "\n					m_Buffers GFrameRate: " << m_Buffers->GetFrameRate()\
+			<< "\n					m_Buffers Height: " << m_Buffers->GetHeight()\
+			<< "\n					m_Buffers Width: " << m_Buffers->GetWidth()\
 			<< "\n					m_Buffers Type: " << m_Buffers->GetType();
-		//m_ProcessBuffers->CopyAll(m_Buffers);
-		for (int j = 0; j < m_Buffers->GetCount(); j++)
+		//m_ProcessBuffers->CopyAll(m_Buffers);   ImageRowPosition
+		int PositionOfAImageRowCache = 0;
+		for (int ImageFrameCount = 0; ImageFrameCount < m_Buffers->GetCount(); ImageFrameCount++)
 		{
-			for (int i = 0; i < m_Buffers->GetHeight(); i++)
+			for (int ImageRowPosition = 0; ImageRowPosition < m_Buffers->GetHeight(); ImageRowPosition++)
 			{
 
 				//m_ProcessBuffers->CopyRect(m_Buffers, j, 0, i, m_Buffers->GetWidth(), 1, j, 0, i);
-				for (int k = 0; k < m_Buffers->GetWidth(); k++)
+				for (int PositionOfAImageRow = PositionOfAImageRowCache*0.99; PositionOfAImageRow < m_Buffers->GetWidth(); PositionOfAImageRow++)
 				{
-					BYTE data;
-					m_Buffers->ReadElement(k, i, &data);
-					if (data > m_nImagePreprocessingThreshold)
+					BYTE ElementDataValue;
+					m_Buffers->ReadElement(PositionOfAImageRow, ImageRowPosition, &ElementDataValue);
+					if (ElementDataValue > m_nImagePreprocessingThreshold)
 					{
-						count = k;
+						PositionOfAImageRowCache = PositionOfAImageRow;
 						break;
 					}
 				}
 
-				m_ProcessBuffers->CopyRect(m_Buffers, j, count, i, m_lImageWidth, 1, j, 0, i);
+				m_ProcessBuffers->CopyRect(m_Buffers, ImageFrameCount, PositionOfAImageRowCache, ImageRowPosition, m_lImageWidth, 1, ImageFrameCount, 0, ImageRowPosition);
 			}
 		}
 		//m_ProcessingImage->Init();
@@ -1105,7 +1101,6 @@ void CZJURollerBearingSurfaceDetectionDlg::GetSignalStatus(SapAcquisition::Signa
 void CZJURollerBearingSurfaceDetectionDlg::OnParameterssettings()
 {
 	LOG(TRACE) << " Bearing Roller Parameters Setting ...";
-	// TODO:  在此添加命令处理程序代码
 	CBearingRollersParameterDlg BRDlg;
 	if (IDOK == BRDlg.DoModal())
 	{
@@ -1205,8 +1200,9 @@ void CZJURollerBearingSurfaceDetectionDlg::OnCommunicationSettings()  //
 		{
 			char VIDdata[2] = { 0 };
 			char PIDdata[2] = { 0 };
-			DoStr2Hex(m_szUsbVID, VIDdata);
-			DoStr2Hex(m_szUsbPID, PIDdata);
+
+			CCommonMethod::DoStr2Hex(m_szUsbVID, VIDdata);
+			CCommonMethod::DoStr2Hex(m_szUsbPID, PIDdata);
 
 			usb_init();
 			usb_find_busses();
@@ -1386,7 +1382,7 @@ LRESULT CZJURollerBearingSurfaceDetectionDlg::OnSerialPortReceiveCommunication(W
 	{
 		switch (m_pkg[1])
 		{
-		case 1:  m_countLine = 0; break;
+		case 1:  m_nXferCallbackCount = 0; break;
 		case 2:                   break;  //其余定义功能
 		default:
 			break;
@@ -1409,54 +1405,6 @@ LRESULT CZJURollerBearingSurfaceDetectionDlg::OnSerialPortReceiveCommunication(W
 	return 0;
 }
 
-int CZJURollerBearingSurfaceDetectionDlg::DoStr2Hex(CString str, char* data)
-{
-	int t, t1;
-	int rlen = 0, len = str.GetLength();
-	for (int i = 0; i < len;)
-	{
-		char l, h = str[i];
-		if (h == ' ')
-		{
-			i++;
-			continue;
-		}
-		i++;
-		if (i >= len) break;
-		l = str[i];
-		t = DoHexChar(h);
-		t1 = DoHexChar(l);
-		if ((t == 16) || (t1 == 16))
-			break;
-		else
-			t = t * 16 + t1;
-		i++;
-		data[rlen] = (char)t;
-		rlen++;
-	}
-	return rlen;
-}
-
-char CZJURollerBearingSurfaceDetectionDlg::DoHexChar(char c)
-{
-	if ((c >= '0') && (c <= '9'))
-		return c - 0x30;
-	else if ((c >= 'A') && (c <= 'F'))
-		return c - 'A' + 10;
-	else if ((c >= 'a') && (c <= 'f'))
-		return c - 'a' + 10;
-	else
-		return 0x10;
-}
-
-byte CZJURollerBearingSurfaceDetectionDlg::DoCheckSum(unsigned char *buffer, int   size)
-{
-	byte myv = 0x00;
-	for (int i = 0; i < size; i++)
-		myv += *buffer++;
-	return myv;
-}
-
 void CZJURollerBearingSurfaceDetectionDlg::OnBearingrollerTest()
 {
 	// TODO: 在此添加命令处理程序代码
@@ -1477,39 +1425,6 @@ void CZJURollerBearingSurfaceDetectionDlg::OnBearingrollerTest()
 
 }
 
-BOOL CZJURollerBearingSurfaceDetectionDlg::WCharToMByte(LPCWSTR lpSrc, char * lpDest)
-{
-	int iSize;
-	iSize = WideCharToMultiByte(CP_ACP, 0, lpSrc, -1, NULL, 0, NULL, NULL);
-	lpDest = (char*)malloc((iSize + 1));
-	WideCharToMultiByte(CP_ACP, 0, lpSrc, -1, lpDest, iSize, NULL, NULL);
-	return TRUE;
-}
-
-BOOL CZJURollerBearingSurfaceDetectionDlg::WChar2MByte(LPCWSTR lpSrc, LPSTR lpDest, int nlen)
-{
-
-
-	int n = 0;
-
-	n = WideCharToMultiByte(CP_OEMCP, 0, lpSrc, -1, lpDest, 0, 0, FALSE);
-	if (n < nlen) return FALSE;
-	WideCharToMultiByte(CP_OEMCP, 0, lpSrc, -1, lpDest, nlen, 0, FALSE);
-	return TRUE;
-}
-
-//BOOL WCharToMByte(LPCWSTR lpcwszStr, LPSTR lpszStr, DWORD dwSize)
-//{
-//	DWORD dwMinSize;
-//	dwMinSize = WideCharToMultiByte(CP_OEMCP, NULL, lpcwszStr, -1, NULL, 0, NULL, FALSE);
-//	if (dwSize < dwMinSize)
-//	{
-//		return FALSE;
-//	}
-//	WideCharToMultiByte(CP_OEMCP, NULL, lpcwszStr, -1, lpszStr, dwSize, NULL, FALSE);
-//	return TRUE;
-//}
-
 void CZJURollerBearingSurfaceDetectionDlg::OnAboutAppShow()
 {
 	// TODO: 在此添加命令处理程序代码
@@ -1517,61 +1432,10 @@ void CZJURollerBearingSurfaceDetectionDlg::OnAboutAppShow()
 	dlg.DoModal();
 }
 
-void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWndResult()
+void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWnd(int nID, Mat *mat,CString ImageSavePrefix)
 {
 
-	//CWnd* pWnd = GetDlgItem(IDC_IMAGERESULT);
-	//if (m_pSrc->empty())
-	//	return;
-	//static BITMAPINFO *bitMapinfo = NULL;
-	//static bool First = TRUE;
-	//if (First)
-	//{
-	//	BYTE *bitBuffer = new BYTE[40 + 4 * 256];
-	//	if (bitBuffer == NULL)
-	//	{
-	//		return;
-	//	}
-	//	First = FALSE;
-	//	memset(bitBuffer, 0, 40 + 4 * 256);
-	//	bitMapinfo = (BITMAPINFO *)bitBuffer;
-	//	bitMapinfo->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	//	bitMapinfo->bmiHeader.biPlanes = 1;      // 目标设备的级别，必须为1  
-	//	for (int i = 0; i<256; i++)
-	//	{   //颜色的取值范围 (0-255)  
-	//		bitMapinfo->bmiColors[i].rgbBlue = bitMapinfo->bmiColors[i].rgbGreen = bitMapinfo->bmiColors[i].rgbRed = (BYTE)i;
-	//	}
-
-	//}
-
-	//bitMapinfo->bmiHeader.biHeight = -m_pSrc->rows;   //如果高度为正的，位图的起始位置在左下角。如果高度为负，起始位置在左上角。  
-	//bitMapinfo->bmiHeader.biWidth = m_pSrc->cols;
-	//bitMapinfo->bmiHeader.biBitCount = m_pSrc->channels() * 8;     // 每个像素所需的位数，必须是1(双色), 4(16色)，8(256色)或24(真彩色)之一  
-
-	//CRect drect;
-	//pWnd->GetClientRect(drect);    //(drect);  (&drect);  两种方式均可，竟然    
-
-	//CClientDC dc(pWnd);
-	//HDC hDC = dc.GetSafeHdc();
-	//SetStretchBltMode(hDC, COLORONCOLOR);  //此句不能少哦  
-	//									   //内存中的图像数据拷贝到屏幕上  
-	//StretchDIBits(hDC,
-	//	0,
-	//	0,
-	//	700,        //显示窗口宽度  
-	//	265,       //显示窗口高度  
-	//	0,
-	//	0,
-	//	m_pSrc->cols,          //图像宽度  
-	//	m_pSrc->rows,          //图像高度  
-	//	m_pSrc->data,
-	//	bitMapinfo,
-	//	DIB_RGB_COLORS,
-	//	SRCCOPY
-	//);
-
-
-	SetImageFileSaveSetting(m_pSrc, _T("Result"));
+	SetImageFileSaveSetting(mat, ImageSavePrefix);
 	BITMAPINFO *pBmpInfo;       //记录图像细节
 	BYTE *pBmpData;             //图像数据
 	BITMAPFILEHEADER bmpHeader; //文件头
@@ -1591,42 +1455,27 @@ void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWndResult()
 	bmpFile.Read(pBmpData, dataBytes);
 	bmpFile.Close();
 	//显示图像
-	CWnd *pWnd = GetDlgItem(IDC_IMAGERESULT); //获得pictrue控件窗口的句柄
+	CWnd *pWnd = GetDlgItem(nID); //获得pictrue控件窗口的句柄 
 	CRect rect;
 	pWnd->GetClientRect(&rect); //获得pictrue控件所在的矩形区域
-	CDC *pDC = pWnd->GetDC(); //获得pictrue控件的DC
+	CDC *pDC = pWnd->GetDC(); //获得pictrue控件的DC  IDC_IMAGERESULT
 	pDC->SetStretchBltMode(COLORONCOLOR);
-	/*StretchDIBits(pDC->GetSafeHdc(), 0, 0, rect.Width(), rect.Height(), 0, 0,
-	bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);*/
 	GetClientRect(&rect);
-	StretchDIBits(pDC->GetSafeHdc(), 0, 0, 700, 265, 0, 0,
-		bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);
-
-
-
-	//IplImage qImg1;
-	//qImg1 = IplImage(*m_pSrc); // cv::Mat -> IplImage
-	//						   //DrawPicToHDC(&qImg1, IDC_SHOWRESULTIMAGE);
-	//CDC *pDC = GetDlgItem(IDC_IMAGERESULT)->GetDC();
-	//HDC hDC = pDC->GetSafeHdc();
-	//CRect rect;
-	//GetClientRect(&rect);
-	//GetDlgItem(IDC_IMAGERESULT)->MoveWindow(rect.left + 10, rect.top + 50, rect.Width() / 2 - 10, 265);
-	////GetDlgItem(IDC_IMAGERESULT)->MoveWindow(rect.left + 10, rect.top + 50, 0, 0);
-	////SetRect(rect, 10, 50, 600, 265);
-	//SetRect(rect, rect.left, rect.top , rect.left + rect.Width() / 2 - 10, rect.top + 265);
-	////GetDlgItem(IDC_IMAGERESULT)->GetClientRect(&rect);
-	//CvvImage cimg;
-	//cimg.CopyOf(&qImg1);
-	///*rect.left += 10;
-	//rect.top += 50;*/
-	/*rect.bottom = rect.top + 265;
-	rect.right = rect.left + rect.Width() / 2-10;*/
-	/*cimg.DrawToHDC(hDC, &rect);
-	ReleaseDC(pDC);*/
-
-	LOG(TRACE) << " Show Image Processed Result...";
+	if (nID == IDC_IMAGERESULT)
+	{
+		StretchDIBits(pDC->GetSafeHdc(), 0, 0, 700, 265, 0, 0,
+			bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);
+		LOG(TRACE) << " Show Image Processed Result...";
+	}
+	else
+	{
+		StretchDIBits(pDC->GetSafeHdc(), 200, 0, 700, 265, 0, 0,
+			bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);
+		LOG(TRACE) << " Show Image Processed Composite...";
+	}
 }
+
+
 
 //std::string TCHAR2STRING（TCHAR *STR）
 //
@@ -1644,122 +1493,6 @@ void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWndResult()
 //
 //}
 
-void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWndComposite()
-{
-	//IplImage qImg1;
-	//qImg1 = IplImage(*m_pDst); // cv::Mat -> IplImage
-	////DrawPicToHDC(&qImg1, IDC_SHOWRESULTIMAGE);
-	//CDC *pDC = GetDlgItem(IDC_IMAGECOMPOSITE)->GetDC();
-	//HDC hDC = pDC->GetSafeHdc();
-	//CRect rect;
-	//GetClientRect(&rect);
-	////GetDlgItem(IDC_IMAGECOMPOSITE)->MoveWindow(rect.Width() / 2, rect.top + 50, rect.Width() / 2-10, 265);
-	//GetDlgItem(IDC_IMAGECOMPOSITE)->MoveWindow(rect.Width() / 2, rect.top + 50, rect.Width() / 2-10, 265);
-	////GetDlgItem(IDC_IMAGECOMPOSITE)->GetClientRect(&rect);
-	//SetRect(rect, rect.Width() / 2, rect.top, rect.Width() - 10, rect.top + 265);
-	//CvvImage cimg;
-	//cimg.CopyOf(&qImg1);
-	////rect.left += rect.Width() / 2;
-	////rect.top += 50;
-	///*rect.bottom = rect.top + 265;
-	//rect.right =  rect.Width()- 10;*/
-	//cimg.DrawToHDC(hDC, &rect);
-	//ReleaseDC(pDC);
-
-	SetImageFileSaveSetting(m_pDst, _T("Composite"));
-	BITMAPINFO *pBmpInfo;       //记录图像细节
-	BYTE *pBmpData;             //图像数据
-	BITMAPFILEHEADER bmpHeader; //文件头
-	BITMAPINFOHEADER bmpInfo;   //信息头
-	CFile bmpFile;              //记录打开文件
-	if (!bmpFile.Open(m_szTempImageSavePath, CFile::modeRead | CFile::typeBinary))
-		return;
-	if (bmpFile.Read(&bmpHeader, sizeof(BITMAPFILEHEADER)) != sizeof(BITMAPFILEHEADER))
-		return;
-	if (bmpFile.Read(&bmpInfo, sizeof(BITMAPINFOHEADER)) != sizeof(BITMAPINFOHEADER))
-		return;
-	pBmpInfo = (BITMAPINFO *)new char[sizeof(BITMAPINFOHEADER)];
-	//为图像数据申请空间
-	memcpy(pBmpInfo, &bmpInfo, sizeof(BITMAPINFOHEADER));
-	DWORD dataBytes = bmpHeader.bfSize - bmpHeader.bfOffBits;
-	pBmpData = (BYTE*)new char[dataBytes];
-	bmpFile.Read(pBmpData, dataBytes);
-	bmpFile.Close();
-	//显示图像
-	CWnd *pWnd = GetDlgItem(IDC_IMAGECOMPOSITE); //获得pictrue控件窗口的句柄
-	CRect rect;
-	pWnd->GetClientRect(&rect); //获得pictrue控件所在的矩形区域
-	CDC *pDC = pWnd->GetDC(); //获得pictrue控件的DC
-	pDC->SetStretchBltMode(COLORONCOLOR);
-	/*StretchDIBits(pDC->GetSafeHdc(), 0, 0, rect.Width(), rect.Height(), 0, 0,
-	bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);*/
-	GetClientRect(&rect);
-	StretchDIBits(pDC->GetSafeHdc(), 200, 0, 700, 265, 0, 0,
-		bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);
-
-	//CWnd* pWnd = GetDlgItem(IDC_IMAGECOMPOSITE);
-	//if (m_pDst->empty())
-	//	return;
-	//static BITMAPINFO *bitMapinfo = NULL;
-	//static bool First = TRUE;
-	//if (First)
-	//{
-	//	BYTE *bitBuffer = new BYTE[40 + 4 * 256];
-	//	if (bitBuffer == NULL)
-	//	{
-	//		return;
-	//	}
-	//	First = FALSE;
-	//	memset(bitBuffer, 0, 40 + 4 * 256);
-	//	bitMapinfo = (BITMAPINFO *)bitBuffer;
-	//	bitMapinfo->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	//	bitMapinfo->bmiHeader.biPlanes = 1;      // 目标设备的级别，必须为1  
-	//	for (int i = 0; i<256; i++)
-	//	{   //颜色的取值范围 (0-255)  
-	//		bitMapinfo->bmiColors[i].rgbBlue = bitMapinfo->bmiColors[i].rgbGreen = bitMapinfo->bmiColors[i].rgbRed = (BYTE)i;
-	//	}
-
-	//}
-
-	//bitMapinfo->bmiHeader.biHeight = -m_pDst->rows;   //如果高度为正的，位图的起始位置在左下角。如果高度为负，起始位置在左上角。  
-	//bitMapinfo->bmiHeader.biWidth = m_pDst->cols;
-	//bitMapinfo->bmiHeader.biBitCount = m_pDst->channels() * 8;     // 每个像素所需的位数，必须是1(双色), 4(16色)，8(256色)或24(真彩色)之一  
-
-	//CRect drect;
-	//pWnd->GetClientRect(drect);    //(drect);  (&drect);  两种方式均可，竟然    
-	//CClientDC dc(pWnd);
-	//HDC hDC = dc.GetSafeHdc();
-	//SetStretchBltMode(hDC, COLORONCOLOR);  //此句不能少哦  
-	//									   //内存中的图像数据拷贝到屏幕上  
-	//BOOL TF=StretchDIBits(hDC,
-	//	200,
-	//	0,
-	//	700,        //显示窗口宽度  
-	//	265,       //显示窗口高度  
-	//	0,
-	//	0,
-	//	m_pDst->cols,          //图像宽度  
-	//	m_pDst->rows,          //图像高度  
-	//	m_pDst->data,
-	//	bitMapinfo,
-	//	DIB_RGB_COLORS,
-	//	SRCCOPY
-	//);
-
-	LOG(TRACE) << " Show Image Processed Composite...";
-}
-
-void CZJURollerBearingSurfaceDetectionDlg::DrawPicToHDC(IplImage *img, UINT ID)
-{
-	CDC *pDC = GetDlgItem(ID)->GetDC();
-	HDC hDC = pDC->GetSafeHdc();
-	CRect rect;
-	GetDlgItem(ID)->GetClientRect(&rect);
-	CvvImage cimg;
-	cimg.CopyOf(img);
-	cimg.DrawToHDC(hDC, &rect);
-	ReleaseDC(pDC);
-}
 
 void CZJURollerBearingSurfaceDetectionDlg::SetImageFileSaveSetting(Mat *pmat, CString HeadString)
 {
@@ -1769,11 +1502,8 @@ void CZJURollerBearingSurfaceDetectionDlg::SetImageFileSaveSetting(Mat *pmat, CS
 	if (pmat != NULL)
 	{
 		char* pszMultiByte = NULL;
-		int iSize;
-		iSize = WideCharToMultiByte(CP_ACP, 0, m_szTempImageSavePath, -1, NULL, 0, NULL, NULL);
-		pszMultiByte = (char*)malloc((iSize + 1));
-		WideCharToMultiByte(CP_ACP, 0, m_szTempImageSavePath, -1, pszMultiByte, iSize, NULL, NULL);
-		//WCharToMByte(szImageSavePath, pszMultiByte);
+
+		pszMultiByte=CCommonMethod::WCharToMByte(m_szTempImageSavePath);
 		imwrite(pszMultiByte, *pmat);
 		LOG(TRACE) << " Image Save:" << pszMultiByte;
 		delete pszMultiByte;
