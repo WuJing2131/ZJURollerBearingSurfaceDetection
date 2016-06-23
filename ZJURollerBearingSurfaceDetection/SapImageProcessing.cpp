@@ -45,6 +45,9 @@ BOOL SapImageProcessing::Run()
 
 
 	cv::Mat src_gray(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC1, (void*)pData);
+
+	pData = nullptr;
+	//delete[] pData;
 	//Mat src(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC3, (void*)pData);
 	/*m_Src->create(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC1);
 	m_Src->data = pData;*/

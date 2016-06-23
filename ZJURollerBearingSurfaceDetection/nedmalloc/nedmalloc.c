@@ -83,6 +83,15 @@ DEALINGS IN THE SOFTWARE.
 #include <valgrind/valgrind.h>
 #include <valgrind/memcheck.h>
 #endif
+//#include <malloc.h>
+//extern "C" {
+//}
+// #if defined(__cplusplus)
+//extern "C"
+// #else
+//extern
+// #endif
+
 #if defined(WIN32)
  #include <malloc.h>
 #else
@@ -101,7 +110,7 @@ size_t malloc_usable_size(void *);
    #include <malloc.h>
   #endif
  #else
-  #error Do not know what to do here
+ // #error Do not know what to do here
  #endif
 #endif
 

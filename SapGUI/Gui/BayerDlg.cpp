@@ -99,16 +99,16 @@ BOOL CBayerOptionsDlg::OnInitDialog()
 
    if (m_pBayer == NULL)
    {
-      AfxMessageBox(_T("No Bayer object specified"));
-      CDialog::OnCancel();
+	  AfxMessageBox(_T("No Bayer object specified"));
+	  CDialog::OnCancel();
 
-      return FALSE;
+	  return FALSE;
    }
 
    UpdateInterface();
 
    return TRUE;  // return TRUE unless you set the focus to a control
-                 // EXCEPTION: OCX Property Pages should return FALSE
+				 // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CBayerOptionsDlg::UpdateInterface()
@@ -122,11 +122,11 @@ void CBayerOptionsDlg::UpdateInterface()
    // Initialize settings for Bayer alignment
    for (i = 0; i < NumAlignValues; i++)
    {
-      if (m_AlignValues[i] == m_pBayer->GetAlign())
-      {
-         m_Align = i;
-         break;
-      }
+	  if (m_AlignValues[i] == m_pBayer->GetAlign())
+	  {
+		 m_Align = i;
+		 break;
+	  }
    }
    
 	// Check which alignment is available
@@ -138,11 +138,11 @@ void CBayerOptionsDlg::UpdateInterface()
    // Initialize settings for Bayer method
    for (i = 0; i < NumMethodValues; i++)
    {
-      if (m_MethodValues[i] == m_pBayer->GetMethod())
-      {
-         m_Method = i;
-         break;
-      }
+	  if (m_MethodValues[i] == m_pBayer->GetMethod())
+	  {
+		 m_Method = i;
+		 break;
+	  }
    }
 
 	// Check which interpolation method is available
@@ -202,18 +202,18 @@ void CBayerOptionsDlg::OnChangeRange(UINT id)
 void CBayerOptionsDlg::OnAutoWhiteBalance()
 {
    if (m_pImageWnd == NULL)
-      return;
+	  return;
 
    if (!m_pImageWnd->IsRoiTrackerActive())
    {
-      AfxMessageBox(_T("You must select a ROI containing white pixels"));
-      return;
+	  AfxMessageBox(_T("You must select a ROI containing white pixels"));
+	  return;
    }
 
    if ( m_pBayer->IsEnabled() && !m_pBayer->IsSoftware())
 	{
-      AfxMessageBox(_T("White balance is not available when hardware Bayer conversion is enabled"));
-      return;
+	  AfxMessageBox(_T("White balance is not available when hardware Bayer conversion is enabled"));
+	  return;
 	}
 
    CRect rect = m_pImageWnd->GetSelectedRoi();
@@ -221,14 +221,14 @@ void CBayerOptionsDlg::OnAutoWhiteBalance()
    if (rect.Width() > 1 && rect.Height() > 1)
    {
 		// Compute new white balance factors from region of interest
-      if (m_pBayer->WhiteBalance(rect.left, rect.top, rect.Width(), rect.Height()))
-      {
+	  if (m_pBayer->WhiteBalance(rect.left, rect.top, rect.Width(), rect.Height()))
+	  {
 			// Update user interface
-         UpdateInterface();
+		 UpdateInterface();
 
 			// Redraw the image
-         UpdateView();
-      }
+		 UpdateView();
+	  }
    }
 }
 
@@ -283,7 +283,7 @@ void CBayerOptionsDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		}
 
 		// Update user interface
-      UpdateInterface();
+	  UpdateInterface();
 	}
 }
 

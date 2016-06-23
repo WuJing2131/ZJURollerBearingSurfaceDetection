@@ -1464,6 +1464,8 @@ void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWnd(int nID, cv::Mat *mat
 			bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);
 		LOG(TRACE) << " Show Image Processed Composite...";
 	}
+	delete[] pBmpInfo;
+	delete[] pBmpData;
 }
 
 
