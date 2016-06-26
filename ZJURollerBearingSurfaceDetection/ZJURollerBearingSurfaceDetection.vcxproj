@@ -216,8 +216,11 @@
   <ItemGroup>
     <ClCompile Include="BearingRollersParameterDlg.cpp" />
     <ClCompile Include="CommonMethod.cpp" />
+    <ClCompile Include="CommunicateWithMCU.cpp" />
     <ClCompile Include="CSerialPort\SerialPort.cpp" />
+    <ClCompile Include="FlatField.cpp" />
     <ClCompile Include="HistogramDlg.cpp" />
+    <ClCompile Include="ImageDisplayAndSave.cpp" />
     <ClCompile Include="SapImageProcessing.cpp" />
     <ClCompile Include="CommunicationConfigurationDlg.cpp" />
     <ClCompile Include="sqlite\SQLite.cpp" />

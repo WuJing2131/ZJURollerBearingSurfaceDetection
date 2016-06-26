@@ -1,20 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="日志设置">
+    <Filter Include="日志">
       <UniqueIdentifier>{ec6eb8b2-2603-4b1c-ab76-80f69fc36fe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="公用方法">
+      <UniqueIdentifier>{e060ed19-8f0e-46ce-bbe5-9eac76f1c2de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据库">
+      <UniqueIdentifier>{30d9d0db-b537-4ecc-9dd5-e36a773a0f97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="工程文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="主程序">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="主程序\图像显示与保存">
+      <UniqueIdentifier>{748e2c0d-a4fe-4a17-83c7-a721ec2bbf0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="主程序\主窗口">
+      <UniqueIdentifier>{d374c1cb-6b79-4f56-ad11-3a149b3737db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="主程序\平场校正">
+      <UniqueIdentifier>{07a18112-d4ce-4339-a1c0-ec3bb06cf0bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="主程序\图像处理">
+      <UniqueIdentifier>{733fae5a-8870-4d4c-869d-066fd8c1848b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="主程序\直方图">
+      <UniqueIdentifier>{728e0633-5a66-41fa-b8d8-378bb09f1c7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="主程序\轴承滚子参数设置">
+      <UniqueIdentifier>{4d0e0f2d-4d47-439b-b6a6-8751cf2ce5a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="串口类">
+      <UniqueIdentifier>{f384196c-0aae-4f16-95a1-5b8a26859c76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="主程序\USB串口通讯配置">
+      <UniqueIdentifier>{dc2dce45-bf26-45fe-8616-36780eb554ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -22,78 +52,87 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZJURollerBearingSurfaceDetection.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ZJURollerBearingSurfaceDetectionDlg.h">
-      <Filter>头文件</Filter>
+      <Filter>工程文件</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
+      <Filter>工程文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
+      <Filter>工程文件</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SapImageProcessing.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="HistogramDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="sqlite\SQLite.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="sqlite\sqlite3.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="BearingRollersParameterDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CommunicationConfigurationDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonMethod.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CSerialPort\SerialPort.h">
-      <Filter>头文件</Filter>
+      <Filter>工程文件</Filter>
     </ClInclude>
     <ClInclude Include="easylogging\easylogging++.h">
-      <Filter>头文件</Filter>
+      <Filter>日志</Filter>
+    </ClInclude>
+    <ClInclude Include="BearingRollersParameterDlg.h">
+      <Filter>主程序\轴承滚子参数设置</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonMethod.h">
+      <Filter>公用方法</Filter>
+    </ClInclude>
+    <ClInclude Include="HistogramDlg.h">
+      <Filter>主程序\直方图</Filter>
+    </ClInclude>
+    <ClInclude Include="sqlite\sqlite3.h">
+      <Filter>数据库</Filter>
+    </ClInclude>
+    <ClInclude Include="sqlite\SQLite.h">
+      <Filter>数据库</Filter>
+    </ClInclude>
+    <ClInclude Include="SapImageProcessing.h">
+      <Filter>主程序\图像处理</Filter>
+    </ClInclude>
+    <ClInclude Include="CSerialPort\SerialPort.h">
+      <Filter>串口类</Filter>
+    </ClInclude>
+    <ClInclude Include="ZJURollerBearingSurfaceDetectionDlg.h">
+      <Filter>主程序\主窗口</Filter>
+    </ClInclude>
+    <ClInclude Include="CommunicationConfigurationDlg.h">
+      <Filter>主程序\USB串口通讯配置</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ZJURollerBearingSurfaceDetection.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ZJURollerBearingSurfaceDetectionDlg.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SapImageProcessing.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="HistogramDlg.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="sqlite\SQLite.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="BearingRollersParameterDlg.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CommunicationConfigurationDlg.cpp">
-      <Filter>源文件</Filter>
+      <Filter>主程序\轴承滚子参数设置</Filter>
     </ClCompile>
     <ClCompile Include="CommonMethod.cpp">
-      <Filter>源文件</Filter>
+      <Filter>公用方法</Filter>
+    </ClCompile>
+    <ClCompile Include="HistogramDlg.cpp">
+      <Filter>主程序\直方图</Filter>
+    </ClCompile>
+    <ClCompile Include="sqlite\SQLite.cpp">
+      <Filter>数据库</Filter>
+    </ClCompile>
+    <ClCompile Include="SapImageProcessing.cpp">
+      <Filter>主程序\图像处理</Filter>
+    </ClCompile>
+    <ClCompile Include="FlatField.cpp">
+      <Filter>主程序\平场校正</Filter>
     </ClCompile>
     <ClCompile Include="CSerialPort\SerialPort.cpp">
-      <Filter>源文件</Filter>
+      <Filter>串口类</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>工程文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ZJURollerBearingSurfaceDetection.cpp">
+      <Filter>工程文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageDisplayAndSave.cpp">
+      <Filter>主程序\图像显示与保存</Filter>
+    </ClCompile>
+    <ClCompile Include="ZJURollerBearingSurfaceDetectionDlg.cpp">
+      <Filter>主程序\主窗口</Filter>
+    </ClCompile>
+    <ClCompile Include="CommunicationConfigurationDlg.cpp">
+      <Filter>主程序\USB串口通讯配置</Filter>
+    </ClCompile>
+    <ClCompile Include="CommunicateWithMCU.cpp">
+      <Filter>主程序\USB串口通讯配置</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,7 +145,7 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="logConfig.conf">
-      <Filter>日志设置</Filter>
+      <Filter>日志</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
