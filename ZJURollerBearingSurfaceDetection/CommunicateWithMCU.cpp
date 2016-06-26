@@ -291,20 +291,3 @@ LRESULT CZJURollerBearingSurfaceDetectionDlg::OnSerialPortReceiveCommunication(W
 	return 0;
 }
 
-void CZJURollerBearingSurfaceDetectionDlg::OnBearingrollerTest()
-{
-
-	/*//CSerialPort Test
-	BYTE kk[9] = { 12 ,22 ,23 ,67,1,11,22,45,89 };
-	m_serialPort.WriteToPort(kk, 9);
-	//m_serialPort.WriteToPort("Hell0",5);
-	*/
-	/*//LIBUSBWIN32 TEST
-	char data[512];
-	CString szSend;
-	int len;
-	CString szSend(_T("EE 01 AA FF FC FF FF"));
-	len = DoStr2Hex(szSend, data);
-	usb_bulk_write(gusb_handle, EP_OUT, data, len, 100);
-	*/
-}

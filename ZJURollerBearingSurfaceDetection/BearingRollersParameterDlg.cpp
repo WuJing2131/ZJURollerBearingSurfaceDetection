@@ -269,7 +269,7 @@ void CBearingRollersParameterDlg::RefreshListView(SetRefreshStates state)
 	else
 	{
 		CString str;
-		GetDlgItem(IDC_COMBO1)->GetWindowTextW(str);
+		GetDlgItem(IDC_DATABASECOMBO)->GetWindowTextW(str);
 		_stprintf(sqlCommad, _T("select * from BearingRoller where Radius like '%%%s%%'"), str);
 	}
 	LOG(TRACE) << sqlCommad;

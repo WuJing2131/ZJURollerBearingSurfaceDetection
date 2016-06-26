@@ -723,6 +723,7 @@ void CZJURollerBearingSurfaceDetectionDlg::OnSize(UINT nType, int cx, int cy)
 	//m_pWndImageResult->MoveWindow(rect.left+10, 100, 200, 45);
 	//GetDlgItem(IDC_IMAGERESULT)->MoveWindow(100, 100, 200, 45);
 	//GetDlgItem(IDC_IMAGECOMPOSITE)->MoveWindow(rect.Width() / 2, 0, rect.Width() / 2, 265);
+
 }
 
 
@@ -1137,6 +1138,56 @@ void CZJURollerBearingSurfaceDetectionDlg::SaveSettings()
 	m_App->WriteProfileStringW(_T("ZJURollerBearingSurfaceDetectionDlg"), _T("m_szSavePath"), m_szSavePath);
 }
 
+
+void CZJURollerBearingSurfaceDetectionDlg::OnBearingrollerTest()
+{
+	int viewWidth;
+	int viewHeight;
+	float	m_scaleHeightFactor;
+	float	m_scaleWidthFactor;
+	BOOL	m_bLockAspectRatio=TRUE;
+	DWORD	m_scaleHeight;
+	DWORD	m_scaleWidth;
+	m_View->GetViewArea(&viewWidth, &viewHeight);
+
+	m_scaleWidthFactor = 100.0f * viewWidth / m_View->GetBuffer()->GetWidth();
+	m_scaleHeightFactor = 100.0f * viewHeight / m_View->GetBuffer()->GetHeight();
+
+	if (m_bLockAspectRatio)
+	{
+		if (m_scaleWidthFactor < m_scaleHeightFactor)
+		{
+			m_scaleHeightFactor = m_scaleWidthFactor;
+		}
+		else
+		{
+			m_scaleWidthFactor = m_scaleHeightFactor;
+		}
+	}
+
+	m_scaleWidth = (DWORD)floor(m_View->GetBuffer()->GetWidth()  * m_scaleWidthFactor / 100 + 0.5f);
+	m_scaleHeight = (DWORD)floor(m_View->GetBuffer()->GetHeight() * m_scaleHeightFactor / 100 + 0.5f);
+
+	m_scaleWidthFactor = 100.0f * m_scaleWidth / m_View->GetBuffer()->GetWidth();
+	m_scaleHeightFactor = 100.0f * m_scaleHeight / m_View->GetBuffer()->GetHeight();
+
+	m_View->SetScalingMode(m_scaleWidthFactor / 100.0f, m_scaleHeightFactor / 100.0f);
+	m_ImageWnd->Invalidate();
+	m_ImageWnd->OnSize();
+	/*//CSerialPort Test
+	BYTE kk[9] = { 12 ,22 ,23 ,67,1,11,22,45,89 };
+	m_serialPort.WriteToPort(kk, 9);
+	//m_serialPort.WriteToPort("Hell0",5);
+	*/
+	/*//LIBUSBWIN32 TEST
+	char data[512];
+	CString szSend;
+	int len;
+	CString szSend(_T("EE 01 AA FF FC FF FF"));
+	len = DoStr2Hex(szSend, data);
+	usb_bulk_write(gusb_handle, EP_OUT, data, len, 100);
+	*/
+}
 
 void CZJURollerBearingSurfaceDetectionDlg::OnAnalysisHistogram()
 {

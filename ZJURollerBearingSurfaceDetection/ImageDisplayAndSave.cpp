@@ -34,20 +34,19 @@ void CZJURollerBearingSurfaceDetectionDlg::showMatImgToWnd(int nID, cv::Mat *mat
 	GetClientRect(&rect);
 	if (nID == IDC_IMAGERESULT)
 	{
-		StretchDIBits(pDC->GetSafeHdc(), 0, 0, 700, 265, 0, 0,
+		StretchDIBits(pDC->GetSafeHdc(), 0, 0, 665, 265, 0, 0,
 			bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);
 		LOG(TRACE) << " Show Image Processed Result...";
 	}
 	else
 	{
-		StretchDIBits(pDC->GetSafeHdc(), 200, 0, 700, 265, 0, 0,
+		StretchDIBits(pDC->GetSafeHdc(), 165, 0, 665, 265, 0, 0,
 			bmpInfo.biWidth, bmpInfo.biHeight, pBmpData, pBmpInfo, DIB_RGB_COLORS, SRCCOPY);
 		LOG(TRACE) << " Show Image Processed Composite...";
 	}
 	delete[] pBmpInfo;
 	delete[] pBmpData;
 }
-
 
 void CZJURollerBearingSurfaceDetectionDlg::SetImageFileSaveSetting(cv::Mat *pmat, CString HeadString)
 {

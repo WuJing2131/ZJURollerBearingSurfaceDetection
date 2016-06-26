@@ -34,7 +34,6 @@ enum StatusBarPosition {
 //USB reader threads (global) function
 UINT ReadReportThread(LPVOID lpParam);
 
-
 class CZJURollerBearingSurfaceDetectionDlg : public CDialogEx
 {
 	// Constructor
@@ -44,7 +43,7 @@ public:
 	static void SignalCallback(SapAcqCallbackInfo *pInfo);
 	static void ImageProcessedCallback(SapProCallbackInfo *pInfo);
 	static void ViewCallback(SapViewCallbackInfo *pInfo);
-	BOOL CreateObjects();   
+	BOOL CreateObjects();
 	BOOL DestroyObjects();
 	BOOL CheckPixelFormat(char* mode);
 	void UpdateMenu();
