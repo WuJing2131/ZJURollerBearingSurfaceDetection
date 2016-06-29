@@ -20,13 +20,13 @@ class SapImageProcessing : public SapProcessing
 public:
 	// Constructor/Destructor
 	SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext,\
-		cv::Mat *pSrc, cv::Mat *pDst, int Thread);
+		cv::Mat *pSrc, cv::Mat *pDst, int *Thread);
 	virtual ~SapImageProcessing();
 	void Displaying_Random_Text(cv::Mat* image, char* window_name, int x, int y);
 	static cv::Scalar randomColor(cv::RNG& rng);
 	void thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_gray, cv::Mat *dst);
 
-	int    m_nthresh = 40;
+	int    *m_nthresh = NULL;
 	int    m_max_thresh = 255;
 	double m_alpha = 0.5; 
 	double m_beta;
@@ -37,6 +37,8 @@ public:
 
 protected:
 	virtual BOOL Run();
+	//afx_msg void OnThreadMessage_ChangeThread(WPARAM wParam, LPARAM lParam);
+	//DECLARE_MESSAGE_MAP()
 
 protected:
 	SapBuffer*  m_ProcessBuffers;

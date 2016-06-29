@@ -6,11 +6,12 @@
 #include "ZJURollerBearingSurfaceDetection.h"
 #include "CommonMethod.h"
 
+
 //
 // Constructor/Destructor
 //
 SapImageProcessing::SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback,\
-	void *pContext, cv::Mat *pSrc, cv::Mat *pDst, int Thread)
+	void *pContext, cv::Mat *pSrc, cv::Mat *pDst, int *Thread)
 	: SapProcessing(pBuffers, pCallback, pContext)
 {
 	m_ProcessBuffers = pBuffers;
@@ -20,6 +21,7 @@ SapImageProcessing::SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCall
 	m_nthresh = Thread;
 }
 
+ 
 SapImageProcessing::~SapImageProcessing()
 {
 	if (m_bInitOK)
@@ -84,7 +86,7 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 	std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Vec4i> hierarchy;
 
-	threshold(*src_gray, threshold_output, m_nthresh, 255, cv::THRESH_BINARY);
+	threshold(*src_gray, threshold_output, *m_nthresh, 255, cv::THRESH_BINARY);
 	findContours(threshold_output, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
 
 

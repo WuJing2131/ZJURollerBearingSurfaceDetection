@@ -38,7 +38,7 @@ public:
 	BOOL IsEnableSerialPortCommunication();
 
 	void LoadSettings();
-	void SaveSettings();
+	void SaveSettings(); 
 
 	CString   m_intPort;
 	CString   m_intBaudRate;

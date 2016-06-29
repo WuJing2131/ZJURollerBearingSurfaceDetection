@@ -17,6 +17,9 @@
 #include "CSerialPort/SerialPort.h"
 #include <queue>
 
+
+//#define  WM_MYMESSAGEFORCHANGETHREAD (WM_USER+100)
+
 //#define FLATFIELD    //Flat Field
 
 

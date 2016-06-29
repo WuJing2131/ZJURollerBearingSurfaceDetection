@@ -81,9 +81,14 @@ BOOL CBearingRollersParameterDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	LOG(TRACE) << " Bearing Roller Parameters Setup";
 	m_App = AfxGetApp();
+
+	UpdateData(TRUE);
+
 	m_CtrImagePreprocessingThreshold.SetRange(0, 50);
+	m_CtrImagePreprocessingThreshold.SetPos(m_nImagePreprocessingThreshold);
 	m_CtrDIPP.SetRange(0, 255);
-	m_CtrDIPP.SetPos(100);
+	m_CtrDIPP.SetPos(m_nImageProcessingPrecision);
+	//m_CtrDIPP.SetPos(100);
 	LoadSettings();
 	CalculateLine(m_dRadius, m_dLength, m_dTaper);
 
@@ -110,6 +115,7 @@ BOOL CBearingRollersParameterDlg::OnInitDialog()
 	}
 
 	RefreshListView(SetRefreshStates::SelectAllToRefresh);
+
 
 	UpdateData(FALSE);
 

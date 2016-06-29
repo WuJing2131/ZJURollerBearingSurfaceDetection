@@ -208,6 +208,7 @@
     <ClInclude Include="CommunicationConfigurationDlg.h" />
     <ClInclude Include="sqlite\SQLite.h" />
     <ClInclude Include="sqlite\sqlite3.h" />
+    <ClInclude Include="Statistics.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ZJURollerBearingSurfaceDetection.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="SapImageProcessing.cpp" />
     <ClCompile Include="CommunicationConfigurationDlg.cpp" />
     <ClCompile Include="sqlite\SQLite.cpp" />
+    <ClCompile Include="Statistics.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -46,6 +46,9 @@
     <Filter Include="主程序\USB串口通讯配置">
       <UniqueIdentifier>{dc2dce45-bf26-45fe-8616-36780eb554ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="主程序\统计">
+      <UniqueIdentifier>{9e3a54bb-ef9a-4137-852f-b9c80aa40979}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -93,6 +96,9 @@
     <ClInclude Include="CommunicationConfigurationDlg.h">
       <Filter>主程序\USB串口通讯配置</Filter>
     </ClInclude>
+    <ClInclude Include="Statistics.h">
+      <Filter>主程序\统计</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BearingRollersParameterDlg.cpp">
@@ -133,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="CommunicateWithMCU.cpp">
       <Filter>主程序\USB串口通讯配置</Filter>
+    </ClCompile>
+    <ClCompile Include="Statistics.cpp">
+      <Filter>主程序\统计</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

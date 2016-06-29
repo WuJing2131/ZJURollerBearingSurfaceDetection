@@ -15,11 +15,17 @@
 #include <iostream>
 #include <string>
 
-#define CRTDBG_MAP_ALLOC   //内存泄漏检测
+#pragma region Pretreatment
+
 #ifdef _DEBUG
-//#include "vld.h"
 #define new DEBUG_NEW  // 调试模式下new 会被替换为 DEBUG_NEW 可以定位内存泄露
 #endif
+
+#define CRTDBG_MAP_ALLOC   //内存泄漏检测
+
+#define JUSTDATAIMAGEPROCESS   //不联机运行模式下 只进行图像处理  防止检测加载驱动
+
+#pragma endregion Pretreatment
 
 
 
@@ -65,8 +71,6 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 #pragma endregion CAboutDlg
 // CRollerBearingSurfaceDetectionDlg 对话框
-
-
 
 CZJURollerBearingSurfaceDetectionDlg::CZJURollerBearingSurfaceDetectionDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CZJURollerBearingSurfaceDetectionDlg::IDD, pParent)
@@ -148,8 +152,6 @@ BEGIN_MESSAGE_MAP(CZJURollerBearingSurfaceDetectionDlg, CDialogEx)
 	ON_COMMAND(ID__ABOUT, &CZJURollerBearingSurfaceDetectionDlg::OnAboutAppShow)
 	ON_COMMAND(ID_ANALYSIS_HISTOGRAM, &CZJURollerBearingSurfaceDetectionDlg::OnAnalysisHistogram)
 END_MESSAGE_MAP()
-
-
 // CRollerBearingSurfaceDetectionDlg 消息处理程序
 
 /////////////////////////////////////////////////////////////////////////////
@@ -350,7 +352,12 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 
 	// Initialize variables
 	GetWindowText(m_appTitle);
-
+#ifdef JUSTDATAIMAGEPROCESS
+	m_Buffers = new SapBuffer();
+	m_Buffers->SetWidth(m_lCameraSamplingWeith);  
+	m_Buffers->SetHeight(m_lImageHeight);   
+	m_ProcessBuffers = new SapBuffer();
+#else
 	// Are we operating on-line?
 	CAcqConfigDlg dlg(this, NULL);
 	if (dlg.DoModal() == IDOK)
@@ -376,13 +383,13 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 		m_ProcessBuffers = new SapBuffer();
 		LOG(TRACE) << " SapAcquisition Config Dlalog does not open when the program is initialized! Drive not loaded successfully ... ";
 	}
-
+#endif
 	m_pImageProcessResult = new  cv::Mat(0, 0, CV_8UC3);
 	m_pImageProcessComposite = new  cv::Mat(0, 0, CV_8UC3);
 	// Define other objects
 	m_View = new SapView(m_ProcessBuffers, m_viewWnd.GetSafeHwnd(), ViewCallback, this);
 	m_ProcessingImage = new SapImageProcessing(m_ProcessBuffers, ImageProcessedCallback, this, \
-		m_pImageProcessResult, m_pImageProcessComposite, m_nMImageProcessingPrecision);  
+		m_pImageProcessResult, m_pImageProcessComposite, &m_nMImageProcessingPrecision);  
 
 	// Create all objects
 	if (!CreateObjects()) { EndDialog(TRUE); return FALSE; }
@@ -412,7 +419,6 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
-
 
 BOOL CZJURollerBearingSurfaceDetectionDlg::CreateObjects()
 {
@@ -638,7 +644,6 @@ void CZJURollerBearingSurfaceDetectionDlg::OnPaint()
 	}
 }
 
-
 void CZJURollerBearingSurfaceDetectionDlg::OnDestroy()
 {
 
@@ -693,7 +698,6 @@ void CZJURollerBearingSurfaceDetectionDlg::OnMove(int x, int y)
 	if (m_ImageWnd) m_ImageWnd->OnMove();
 }
 
-
 void CZJURollerBearingSurfaceDetectionDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
@@ -725,7 +729,6 @@ void CZJURollerBearingSurfaceDetectionDlg::OnSize(UINT nType, int cx, int cy)
 	//GetDlgItem(IDC_IMAGECOMPOSITE)->MoveWindow(rect.Width() / 2, 0, rect.Width() / 2, 265);
 
 }
-
 
 void CZJURollerBearingSurfaceDetectionDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
@@ -879,7 +882,6 @@ void CZJURollerBearingSurfaceDetectionDlg::OnSnap()
 	}
 }
 
-
 //*****************************************************************************************
 //
 //					Acquisition Options
@@ -938,7 +940,6 @@ void CZJURollerBearingSurfaceDetectionDlg::OnLoadAcqConfig()
 			*m_Acq = acq;
 			CreateObjects();
 		}
-
 		GetSignalStatus();
 		m_ImageWnd->OnSize();
 		InvalidateRect(NULL);
@@ -1040,7 +1041,8 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFileLoad()
 					}
 				}
 
-				m_ProcessBuffers->CopyRect(m_Buffers, ImageFrameCount, PositionOfAImageRowCache, ImageRowPosition, m_lImageWidth, 1, ImageFrameCount, 0, ImageRowPosition);
+				m_ProcessBuffers->CopyRect(m_Buffers, ImageFrameCount, PositionOfAImageRowCache,\
+					ImageRowPosition, m_lImageWidth, 1, ImageFrameCount, 0, ImageRowPosition);
 			}
 		}
 		//m_ProcessingImage->Init();
@@ -1084,7 +1086,6 @@ void CZJURollerBearingSurfaceDetectionDlg::GetSignalStatus(SapAcquisition::Signa
 		SetWindowText(newTitle);
 	}
 }
-
 
 void CZJURollerBearingSurfaceDetectionDlg::OnParameterssettings()
 {
@@ -1137,7 +1138,6 @@ void CZJURollerBearingSurfaceDetectionDlg::SaveSettings()
 {
 	m_App->WriteProfileStringW(_T("ZJURollerBearingSurfaceDetectionDlg"), _T("m_szSavePath"), m_szSavePath);
 }
-
 
 void CZJURollerBearingSurfaceDetectionDlg::OnBearingrollerTest()
 {
