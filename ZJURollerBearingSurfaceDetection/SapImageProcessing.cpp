@@ -11,14 +11,14 @@
 // Constructor/Destructor
 //
 SapImageProcessing::SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback,\
-	void *pContext, cv::Mat *pSrc, cv::Mat *pDst, int *Thread)
+	void *pContext, cv::Mat *pSrc, cv::Mat *pDst, const int *Thread)
 	: SapProcessing(pBuffers, pCallback, pContext)
 {
 	m_ProcessBuffers = pBuffers;
 	// m_ColorConv = pColorConv;
 	m_pImageProcessResult = pSrc;
 	m_pImageProcessComposite = pDst;
-	m_nthresh = Thread;
+	m_nthresh =const_cast<int*>( Thread);
 }
 
  

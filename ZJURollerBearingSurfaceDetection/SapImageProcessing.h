@@ -20,7 +20,7 @@ class SapImageProcessing : public SapProcessing
 public:
 	// Constructor/Destructor
 	SapImageProcessing(SapBuffer *pBuffers, SapProCallback pCallback, void *pContext,\
-		cv::Mat *pSrc, cv::Mat *pDst, int *Thread);
+		cv::Mat *pSrc, cv::Mat *pDst, const int *Thread);
 	virtual ~SapImageProcessing();
 	void Displaying_Random_Text(cv::Mat* image, char* window_name, int x, int y);
 	static cv::Scalar randomColor(cv::RNG& rng);
