@@ -1192,11 +1192,35 @@ void CZJURollerBearingSurfaceDetectionDlg::OnBearingrollerTest()
 void CZJURollerBearingSurfaceDetectionDlg::OnAnalysisHistogram()
 {
 	BYTE *pData;
-	m_Buffers->GetAddress((void **)&pData);
+	m_ProcessBuffers->GetAddress((void **)&pData);
 	cv::Mat HistogramMat(m_ProcessBuffers->GetHeight(), m_ProcessBuffers->GetWidth(), CV_8UC1, (void*)pData);
-	cv::Mat HistDst;
-	equalizeHist(HistogramMat, HistDst);    //直方图   Debug
-	CHistogramDlg histDlg(&HistDst);
-	histDlg.DoModal();
+
+	int histSize = 256;
+	float range[] = { 0, 256 };
+	const float* histRange = { range };
+	bool uniform = true; bool accumulate = false;
+	cv::Mat b_hist;
+	calcHist(&HistogramMat, 1, 0, cv::Mat(), b_hist, 1, &histSize, &histRange, uniform, accumulate);
+
+	// Draw the histograms
+	int hist_w = 512; int hist_h = 400;
+	int bin_w = cvRound((double)hist_w / histSize);
+	cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0, 0, 0));
+	normalize(b_hist, b_hist, 0, histImage.rows, cv::NORM_MINMAX, -1, cv::Mat());
+
+	for (int i = 1; i < histSize; i++)
+	{
+		line(histImage, cv::Point(bin_w*(i - 1), hist_h - cvRound(b_hist.at<float>(i - 1))),
+			cv::Point(bin_w*(i), hist_h - cvRound(b_hist.at<float>(i))),
+			cv::Scalar(255, 0, 0), 2, 8, 0);
+		
+	}
+	//cv::cvtColor(HistogramMat, HistogramMat, cv::COLOR_BGR2GRAY);
+	//cv::Mat HistDst;
+	//equalizeHist(HistogramMat, HistDst);    //直方图   Debug
+	SetImageFileSaveSetting(&histImage, _T("hist"));
+	//cv::imwrite("C:\\Users\\WuJing\\Desktop\\", HistDst);
+	CHistogramDlg histDlg(&histImage);
+	histDlg.DoModal(); 
 	LOG(TRACE) << " Image Analysis Histogram...";
 }

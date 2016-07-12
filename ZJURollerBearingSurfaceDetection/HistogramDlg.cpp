@@ -5,7 +5,7 @@
 #include "ZJURollerBearingSurfaceDetection.h"
 #include "HistogramDlg.h"
 #include "afxdialogex.h"
-
+#include "CvvImage.h"
 
 
 // CHistogramDlg 对话框
@@ -16,8 +16,11 @@ CHistogramDlg::CHistogramDlg(cv::Mat *showImage, CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_HISTGRAM, pParent)
 	, m_Histogram(showImage)
 {
-	HistImageBox = GetDlgItem(IDD_HISTGRAM);
-	DrawPicToHDC(m_Histogram, HistImageBox);
+	//HistImageBox = GetDlgItem(IDD_HISTGRAM);
+	//DrawPicToHDC(m_Histogram, HistImageBox);
+	IplImage qImg1;
+	qImg1 = IplImage(*m_Histogram); // cv::Mat -> IplImage
+	DrawPicToHDC(&qImg1, IDD_HISTGRAM);
 }
 
 
@@ -37,10 +40,21 @@ END_MESSAGE_MAP()
 
 
 // CHistogramDlg 消息处理程序
-
+void CHistogramDlg::DrawPicToHDC(IplImage *img, UINT ID)
+{
+	CDC *pDC = GetDlgItem(ID)->GetDC();
+	HDC hDC = pDC->GetSafeHdc();
+	CRect rect;
+	GetDlgItem(ID)->GetClientRect(&rect);
+	CvvImage cimg;
+	cimg.CopyOf(img);
+	cimg.DrawToHDC(hDC, &rect);
+	ReleaseDC(pDC);
+}
 
 void CHistogramDlg::DrawPicToHDC(cv::Mat *img, CWnd* pWnd)
 {
+
 	//CWnd* pWnd = GetDlgItem(ID);
 	if (img->empty())
 		return;

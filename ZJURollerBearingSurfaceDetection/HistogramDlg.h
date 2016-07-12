@@ -14,7 +14,7 @@ public:
 	CHistogramDlg(cv::Mat *showImage,CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CHistogramDlg();
 	void DrawPicToHDC(cv::Mat *img, CWnd* pWnd);
-
+	void DrawPicToHDC(IplImage *img, UINT ID);
 	
 // 对话框数据
 #ifdef AFX_DESIGN_TIME

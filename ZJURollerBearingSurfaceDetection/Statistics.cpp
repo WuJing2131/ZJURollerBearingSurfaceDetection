@@ -10,7 +10,7 @@ CStatistics::~CStatistics()
 
 double CStatistics::CalculateRateOfDefect()
 {
-	int Num_DetectedBearingRoller = m_List_Info_DetectedBearingRoller.size();
+	int Num_DetectedBearingRoller = static_cast<int>(m_List_Info_DetectedBearingRoller.size());
 	int Num_DetectedBearingRollerWithDefect = 0;
 	std::vector<BearingRollerDetectionResult>::iterator iteratorInfo;
 	for (iteratorInfo = m_List_Info_DetectedBearingRoller.begin();

@@ -181,7 +181,7 @@ void  CZJURollerBearingSurfaceDetectionDlg::CmdToLowerComputer()
 UINT ReadReportThread(LPVOID lpParam)
 {
 	LOG(TRACE) << " Read Report Thread Created....";
-	CZJURollerBearingSurfaceDetectionDlg *pDlg = (CZJURollerBearingSurfaceDetectionDlg *)lpParam;
+	//CZJURollerBearingSurfaceDetectionDlg *pDlg = (CZJURollerBearingSurfaceDetectionDlg *)lpParam;
 	ReadOverlapped.Offset = 0;
 	ReadOverlapped.OffsetHigh = 0;
 	ReadOverlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -243,7 +243,7 @@ LRESULT CZJURollerBearingSurfaceDetectionDlg::OnSerialPortReceiveCommunication(W
 		return 0;
 
 	if (SerialPortCount < PKG_SIZE)
-		m_pkg[SerialPortCount++] = ch;
+		m_pkg[SerialPortCount++] = static_cast<UCHAR>(ch);
 	if (ch == 0xFF)
 	{
 		switch (cmd_state)

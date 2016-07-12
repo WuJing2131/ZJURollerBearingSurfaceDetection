@@ -116,7 +116,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
@@ -201,6 +201,7 @@
     <ClInclude Include="BearingRollersParameterDlg.h" />
     <ClInclude Include="CommonMethod.h" />
     <ClInclude Include="CSerialPort\SerialPort.h" />
+    <ClInclude Include="CvvImage\CvvImage.h" />
     <ClInclude Include="easylogging\easylogging++.h" />
     <ClInclude Include="HistogramDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="CommonMethod.cpp" />
     <ClCompile Include="CommunicateWithMCU.cpp" />
     <ClCompile Include="CSerialPort\SerialPort.cpp" />
+    <ClCompile Include="CvvImage\CvvImage.cpp" />
     <ClCompile Include="FlatField.cpp" />
     <ClCompile Include="HistogramDlg.cpp" />
     <ClCompile Include="ImageDisplayAndSave.cpp" />

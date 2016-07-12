@@ -1,5 +1,26 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "CommonMethod.h"
+
+#include <comutil.h>//_com_util::ConvertBSTRToString
+#pragma comment(lib,"comsupp.lib")
+//_com_util::ConvertBSTRToString
+
+/*================================================================*
+【函數】:    ConvertStringToChar()
+【功能】:    将UNICODE 或ANSI CString 转换成char*
+【参数】:    str : 要转换的字符串
+【返回】:    返回转换后的char *
+【例子】:   
+【注意】:    返回后的char*需delete掉
+*================================================================*/
+char* CCommonMethod::ConvertStringToChar(const CString &str)
+{
+	char *chReturn = NULL;
+	BSTR bstr = str.AllocSysString();
+	chReturn = _com_util::ConvertBSTRToString(bstr);
+	SysFreeString(bstr);
+	return chReturn;
+}
 
 
 CCommonMethod::CCommonMethod()
@@ -76,6 +97,7 @@ char *  CCommonMethod::WCharToMByte(LPCWSTR lpSrc)
 	iSize = WideCharToMultiByte(CP_ACP, 0, lpSrc, -1, NULL, 0, NULL, NULL);
 	lpDest = (char*)malloc((iSize + 1));
 	memset(lpDest, 0, iSize + 1);
+	assert(lpDest != NULL && "CommonMethod WCharToMBety lpDest is Null");
 	if (!lpDest)
 		return NULL;
 	WideCharToMultiByte(CP_ACP, 0, lpSrc, -1, lpDest, iSize, NULL, NULL);

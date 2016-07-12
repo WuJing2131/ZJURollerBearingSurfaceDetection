@@ -73,7 +73,7 @@ BOOL SapImageProcessing::Run()
 	// Mat(int rows, int cols, int type, void* data, size_t step=AUTO_STEP);
 	//DIP with pBuffers;
    /*if (m_ColorConv->IsSoftwareEnabled())
-   {
+   { 
 	  m_ColorConv->Convert( GetIndex());
    }*/
 
@@ -114,12 +114,11 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 	int idefectsCounts = 0;
 	int  RustCount = 0;   //锈蚀
 	int  EtchCount = 0;   //刻蚀
-	while (itc != contours.end())
-	{
+	for_each(begin(contours), end(contours), [&idefectsCounts,&vecNum,&dst,&RustCount,&EtchCount](auto itc_contours) {
 		++idefectsCounts;
 		//Mat humomentMat(7, 1, CV_32FC1);
 		//计算所有的距  
-		CvMoments mom = cv::moments(cv::Mat(*itc++));
+		CvMoments mom = cv::moments(cv::Mat(itc_contours));
 		//CvMoments moment;
 		//cvMoments(src, &moment, 2);   //第三个像素点非0，则所有的0像素点被当做0，非0像素点被当做1  
 		CvHuMoments humoment;
@@ -147,11 +146,46 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 
 		vecNum.clear();
 		//计算并画出质心  
-		circle(*dst, cv::Point(mom.m10 / mom.m00, mom.m01 / mom.m00), 2, cv::Scalar(2), 2);
-	}
+		circle(*dst, cv::Point(int(mom.m10 / mom.m00), int(mom.m01 / mom.m00)), 2, cv::Scalar(2), 2);
+	});
+	//while (itc != contours.end())
+	//{
+	//	++idefectsCounts;
+	//	//Mat humomentMat(7, 1, CV_32FC1);
+	//	//计算所有的距  
+	//	CvMoments mom = cv::moments(cv::Mat(*itc++));
+	//	//CvMoments moment;
+	//	//cvMoments(src, &moment, 2);   //第三个像素点非0，则所有的0像素点被当做0，非0像素点被当做1  
+	//	CvHuMoments humoment;
+	//	cvGetHuMoments(&mom, &humoment);
+	//	vecNum.push_back(humoment.hu1);
+	//	vecNum.push_back(humoment.hu2);
+	//	vecNum.push_back(humoment.hu3);
+	//	vecNum.push_back(humoment.hu4);
+	//	vecNum.push_back(humoment.hu5);
+	//	vecNum.push_back(humoment.hu6);
+	//	vecNum.push_back(humoment.hu7);
+	//	el::Loggers::removeFlag(el::LoggingFlag::NewLineForContainer);
+	//	if (humoment.hu1 > 0.6)
+	//	{
+	//		LOG(TRACE) << vecNum;
+	//		++RustCount;
+	//		LOG(TRACE) << L"*******************锈蚀************************";
+	//	}
+	//	else
+	//	{
+	//		LOG(TRACE) << vecNum;
+	//		++EtchCount;
+	//		LOG(TRACE) << L"*******************刻蚀************************";
+	//	}
+
+	//	vecNum.clear();
+	//	//计算并画出质心  
+	//	circle(*dst, cv::Point(int(mom.m10 / mom.m00), int(mom.m01 / mom.m00)), 2, cv::Scalar(2), 2);
+	//}
 	LOG(TRACE) << "*****************************************************************************";
 	std::vector<cv::RotatedRect> minRect(contours.size());
-	std::vector<cv::RotatedRect> minEllipse(contours.size());
+	std::vector<cv::RotatedRect> minEllipse(contours.size()); 
 
 	for (size_t i = 0; i < contours.size(); ++i)
 	{
@@ -183,7 +217,7 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 	addWeighted(*src, m_alpha, *dst, m_beta, 0.0, *src);
 	int infoConut = 0;
 	char czInfo[100];
-	sprintf(czInfo, "Thread Value: %d", m_nthresh);
+	sprintf(czInfo, "Thread Value: %d", *m_nthresh);
 	Displaying_Random_Text(dst, czInfo, 500, (++infoConut) * 45);
 
 	sprintf(czInfo, "Defects Counts: %d", idefectsCounts);
