@@ -27,8 +27,6 @@
 
 #pragma endregion Pretreatment
 
-
-
 // status line indicator
 static const UINT indicators[] =
 {
@@ -178,9 +176,11 @@ void CZJURollerBearingSurfaceDetectionDlg::XferCallback(SapXferCallbackInfo *pIn
 		if (pDlg->m_nXferCallbackCount < pDlg->m_lImageHeight)
 		{
 			int PositionOfAImageRowCache = 0;
-			for (int ImageFrameCount = 0; ImageFrameCount < pDlg->m_Buffers->GetCount(); ++ImageFrameCount)
+			static int ACQ_BUFFERS_COUNTS = pDlg->m_Buffers->GetCount();
+			static int ACQ_BUFFERS_WIDTH = pDlg->m_Buffers->GetWidth();
+			for (int ImageFrameCount = 0; ImageFrameCount < ACQ_BUFFERS_COUNTS; ++ImageFrameCount)
 			{
-				for (int PositionOfAImageRow = PositionOfAImageRowCache*0.99; PositionOfAImageRow < pDlg->m_Buffers->GetWidth(); ++PositionOfAImageRow)
+				for (int PositionOfAImageRow = PositionOfAImageRowCache*0.99; PositionOfAImageRow <ACQ_BUFFERS_WIDTH; ++PositionOfAImageRow)
 				{
 					BYTE ElementDataValue;
 					pDlg->m_Buffers->ReadElement(PositionOfAImageRow, 0, &ElementDataValue);
@@ -366,7 +366,8 @@ BOOL CZJURollerBearingSurfaceDetectionDlg::OnInitDialog()
 		m_Acq = new SapAcquisition(dlg.GetAcquisition());
 		m_Buffers = new SapBufferWithTrash(2, m_Acq);
 		m_Xfer = new SapAcqToBuf(m_Acq, m_Buffers, XferCallback, this);
-		//m_ProcessBuffers = new SapBuffer(2, m_Buffers->GetWidth(), m_lImageHeight, m_Buffers->GetFormat(), m_Buffers->GetType(), m_Buffers->GetLocation());
+		//m_ProcessBuffers = new SapBuffer(2, m_Buffers->GetWidth(), m_lImageHeight, m_Buffers->Get
+		mat(), m_Buffers->GetType(), m_Buffers->GetLocation());
 		m_ProcessBuffers = new SapBuffer();
 		//m_ProcessBuffers = new SapBufferWithTrash(2, m_Acq);
 		//	m_ProcessBuffers->SetHeight(m_lImageHeight);
@@ -606,7 +607,6 @@ void CZJURollerBearingSurfaceDetectionDlg::OnSysCommand(UINT nID, LPARAM lParam)
 // 如果向对话框添加最小化按钮，则需要下面的代码
 //  来绘制该图标。  对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
-
 void CZJURollerBearingSurfaceDetectionDlg::OnPaint()
 {
 	//CRect   rectLL;
@@ -1024,13 +1024,16 @@ void CZJURollerBearingSurfaceDetectionDlg::OnFileLoad()
 			<< "\n					m_Buffers Type: " << m_Buffers->GetType();
 		//m_ProcessBuffers->CopyAll(m_Buffers);   ImageRowPosition
 		int PositionOfAImageRowCache = 0;
-		for (int ImageFrameCount = 0; ImageFrameCount < m_Buffers->GetCount(); ++ImageFrameCount)
+		static int ACQ_BUFFERS_COUNTS = m_Buffers->GetCount();
+		static int ACQ_BUFFERS_HEIGHT = m_Buffers->GetHeight();
+		static int ACQ_BUFFERS_WIDTH = m_Buffers->GetWidth();
+		for (int ImageFrameCount = 0; ImageFrameCount < ACQ_BUFFERS_COUNTS; ++ImageFrameCount)
 		{
-			for (int ImageRowPosition = 0; ImageRowPosition < m_Buffers->GetHeight(); ++ImageRowPosition)
+			for (int ImageRowPosition = 0; ImageRowPosition < ACQ_BUFFERS_HEIGHT; ++ImageRowPosition)
 			{
 
 				//m_ProcessBuffers->CopyRect(m_Buffers, j, 0, i, m_Buffers->GetWidth(), 1, j, 0, i);
-				for (int PositionOfAImageRow = PositionOfAImageRowCache*0.99; PositionOfAImageRow < m_Buffers->GetWidth(); PositionOfAImageRow++)
+				for (int PositionOfAImageRow = PositionOfAImageRowCache*0.99; PositionOfAImageRow < ACQ_BUFFERS_WIDTH; PositionOfAImageRow++)
 				{
 					BYTE ElementDataValue;
 					m_Buffers->ReadElement(PositionOfAImageRow, ImageRowPosition, &ElementDataValue);

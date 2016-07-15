@@ -109,7 +109,7 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 	}
 
 	std::vector<double> vecNum;
-	itc = contours.begin();
+	//itc = contours.begin();
 	LOG(TRACE) << "***************Bearing Roller Defect characteristic moment[hu]***************";
 	int idefectsCounts = 0;
 	int  RustCount = 0;   //атЪД
@@ -187,7 +187,9 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 	std::vector<cv::RotatedRect> minRect(contours.size());
 	std::vector<cv::RotatedRect> minEllipse(contours.size()); 
 
-	for (size_t i = 0; i < contours.size(); ++i)
+	int CURRENT_IMAGE_CONTOURS_SIZE = contours.size();
+
+	for (size_t i = 0; i < CURRENT_IMAGE_CONTOURS_SIZE; ++i)
 	{
 		minRect[i] = cv::minAreaRect(cv::Mat(contours[i]));
 		if (contours[i].size() > 5)
@@ -200,7 +202,7 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 	dst->create(threshold_output.size(), CV_8UC3);
 	drawing.copyTo(*dst);
 	//Displaying_Random_Text(dst, "Test Text", 1000, 200);
-	for (size_t i = 0; i < contours.size(); ++i)
+	for (size_t i = 0; i < CURRENT_IMAGE_CONTOURS_SIZE; ++i)
 	{
 		cv::Scalar color = cv::Scalar(m_rng.uniform(0, 255), m_rng.uniform(0, 255), m_rng.uniform(0, 255));
 		// contour
@@ -209,7 +211,8 @@ void SapImageProcessing::thresh_callback(int, void*, cv::Mat *src, cv::Mat *src_
 		ellipse(*dst, minEllipse[i], color, 2, 8);
 		// rotated rectangle
 		cv::Point2f rect_points[4]; minRect[i].points(rect_points);
-		for (int j = 0; j < 4; ++j)
+		static const int RECT_POINTS_SIZE = 4;
+		for (int j = 0; j < RECT_POINTS_SIZE; ++j)
 			line(*dst, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
 	}
 	m_alpha = 0.4;
